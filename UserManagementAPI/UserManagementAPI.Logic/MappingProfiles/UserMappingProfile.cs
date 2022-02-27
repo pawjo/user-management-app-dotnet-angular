@@ -8,7 +8,9 @@ namespace UserManagementAPI.Logic.MappingProfiles
     {
         public UserMappingProfile()
         {
-            CreateMap<AddUserRequest, User>();
+            CreateMap<AddUserRequest, User>()
+                .ForMember(dest => dest.ImageName, opt =>
+                   opt.MapFrom(src => "default.png"));
         }
     }
 }
