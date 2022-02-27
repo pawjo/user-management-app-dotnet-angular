@@ -32,6 +32,14 @@ namespace UserManagementAPI.Controllers
             return Ok(result.Response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetListAsync()
+        {
+            var result = await _service.GetListAsync();
+
+            return Ok(result.Response);
+        }
+
         [HttpPut(imageRoute)]
         public async Task<IActionResult> UpdateUserImageAsync([FromForm] IFormFile image, [FromRoute] int userId)
         {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserManagementAPI.Infrastructure;
 using UserManagementAPI.Infrastructure.Models;
@@ -87,7 +88,14 @@ namespace UserManagementAPI.Logic.Services
             return new Result();
         }
 
-        
+        public async Task<Result<IEnumerable<UserListItemDto>>> GetListAsync()
+        {
+            var users = await _context.Users.ToListAsync();
+
+            var response = _mapper.Map<IEnumerable<UserListItemDto>>(users);
+
+            return new Result<IEnumerable<UserListItemDto>>(response);
+        }
 
         public async Task<Result> UpdateUserImageAsync(int userId, IFormFile image)
         {
