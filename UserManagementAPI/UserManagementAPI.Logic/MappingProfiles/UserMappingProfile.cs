@@ -10,7 +10,7 @@ namespace UserManagementAPI.Logic.MappingProfiles
         {
             CreateMap<AddUserRequest, User>()
                 .ForMember(dest => dest.ImageName, opt =>
-                   opt.MapFrom(src => "default.png"));
+                   opt.MapFrom((src, dest, destMember, ctx) => ctx.Items["defaultImageName"]));
         }
     }
 }

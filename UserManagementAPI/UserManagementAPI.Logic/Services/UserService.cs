@@ -27,7 +27,8 @@ namespace UserManagementAPI.Logic.Services
 
         public async Task<Result<int>> AddAsync(AddUserRequest request)
         {
-            var user = _mapper.Map<User>(request);
+            var user = _mapper.Map<User>(request, opt =>
+                opt.Items["defaultImageName"] = GetDefaultImageName());
 
             await _context.Users.AddAsync(user);
             var added = await _context.SaveChangesAsync();
@@ -48,12 +49,12 @@ namespace UserManagementAPI.Logic.Services
             {
                 return new Result(404, "User not found");
             }
-
-            var defaultImageName = _configuration["AzureBlobSettings:DefaultUserImageName"];
             
+            var defaultImageName = GetDefaultImageName();
+
             // If user have empty image name it need change to default image name
             var isUpdateNeeded = string.IsNullOrWhiteSpace(user.ImageName);
-            
+
             // User have image if he doesn't have default or empty image name
             var userHaveImage = user.ImageName != defaultImageName && !isUpdateNeeded;
 
@@ -86,6 +87,8 @@ namespace UserManagementAPI.Logic.Services
             return new Result();
         }
 
+        
+
         public async Task<Result> UpdateUserImageAsync(int userId, IFormFile image)
         {
             var user = await GetSingleUserById(userId);
@@ -112,10 +115,11 @@ namespace UserManagementAPI.Logic.Services
             return new Result();
         }
 
-        private async Task<User> GetSingleUserById(int userId)
-        {
-            return await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
-        }
+        private string GetDefaultImageName() =>
+            _configuration["AzureBlobSettings:DefaultUserImageName"];
+
+        private async Task<User> GetSingleUserById(int userId) =>
+            await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
 
         private async Task<int> UpdateAndSaveUserImageName(User user, string newImageName)
         {
