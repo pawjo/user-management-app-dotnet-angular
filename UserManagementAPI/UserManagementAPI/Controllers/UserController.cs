@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using UserManagementAPI.Logic.Dtos;
 using UserManagementAPI.Logic.Interfaces;
@@ -27,6 +28,19 @@ namespace UserManagementAPI.Controllers
             }
 
             return Ok(result.Response);
+        }
+
+        [HttpPut("/image/{userId}")]
+        public async Task<IActionResult> UpdateUserImageAsync([FromForm] IFormFile image, [FromRoute] int userId)
+        {
+            var result = await _service.UpdateUserImageAsync(userId, image);
+
+            if (result.IsError)
+            {
+                return StatusCode(result.ErrorCode, result.ErrorMessage);
+            }
+
+            return Ok();
         }
     }
 }

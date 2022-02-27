@@ -7,5 +7,7 @@ namespace UserManagementAPI.Logic.Interfaces
     public interface IUserService
     {
         Task<Result<int>> AddAsync(AddUserRequest request);
+
+        Task<Result> UpdateUserImageAsync(int userId, IFormFile image);
     }
 }

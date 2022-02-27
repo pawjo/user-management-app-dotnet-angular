@@ -6,6 +6,6 @@ namespace UserManagementAPI.Logic.Interfaces
 {
     public interface IImageService
     {
-        Task<Result<string>> UploadUserImageAsync(int userId, IFormFile image);
+        Task<Result<string>> UploadImageAsync(IFormFile image);
     }
 }

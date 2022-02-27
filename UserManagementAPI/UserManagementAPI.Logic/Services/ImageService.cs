@@ -19,11 +19,11 @@ namespace UserManagementAPI.Logic.Services
             _blobService = blobService;
         }
 
-        public async Task<Result<string>> UploadUserImageAsync(int userId, IFormFile image)
+        public async Task<Result<string>> UploadImageAsync(IFormFile image)
         {
             if (image.Length == 0)
             {
-                throw new Exception("File is empty");
+                return new Result<string>(400, "File is empty");
             }
 
             var stream = image.OpenReadStream();
@@ -39,8 +39,6 @@ namespace UserManagementAPI.Logic.Services
             {
                 return new Result<string>(500, e.Message);
             }
-
-
 
             return new Result<string>(fileName);
         }
