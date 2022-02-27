@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using UserManagementAPI.Filters;
 using UserManagementAPI.Infrastructure;
 using UserManagementAPI.Logic.Interfaces;
+using UserManagementAPI.Logic.MappingProfiles;
 using UserManagementAPI.Logic.Services;
 
 namespace UserManagementAPI
@@ -26,6 +27,8 @@ namespace UserManagementAPI
         {
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SQLDatabase")));
+
+            services.AddAutoMapper(cfg => cfg.AddProfile<UserMappingProfile>());
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAzureBlobService, AzureBlobService>();
