@@ -9,5 +9,7 @@ namespace UserManagementAPI.Logic.Interfaces
         Task<Result<int>> AddAsync(AddUserRequest request);
 
         Task<Result> UpdateUserImageAsync(int userId, IFormFile image);
+
+        Task<Result> DeleteUserImageAsync(int userId);
     }
 }

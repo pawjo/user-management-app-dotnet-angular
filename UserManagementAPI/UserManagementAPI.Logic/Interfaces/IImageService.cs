@@ -7,5 +7,7 @@ namespace UserManagementAPI.Logic.Interfaces
     public interface IImageService
     {
         Task<Result<string>> UploadImageAsync(IFormFile image);
+
+        Task<Result> DeleteImageAsync(string name);
     }
 }
