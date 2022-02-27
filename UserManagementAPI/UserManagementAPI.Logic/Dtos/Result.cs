@@ -1,11 +1,9 @@
 ﻿namespace UserManagementAPI.Logic.Dtos
 {
-    public class Result<T>
+    public class Result
     {
-        public Result(T response)
-        {
-            Response = response;
-        }
+        public Result()
+        { }
 
         public Result(int errorCode, string errorMessage)
         {
@@ -13,13 +11,23 @@
             ErrorMessage = errorMessage;
         }
 
-        public T Response { get; set; }
-
-
         public int ErrorCode { get; set; }
 
         public string ErrorMessage { get; set; }
 
         public bool IsError { get => ErrorCode != 0; }
+    }
+
+    public class Result<T> : Result
+    {
+        public Result(T response) : base()
+        {
+            Response = response;
+        }
+
+        public Result(int errorCode, string errorMessage) : base(errorCode, errorMessage)
+        { }
+
+        public T Response { get; set; }
     }
 }
