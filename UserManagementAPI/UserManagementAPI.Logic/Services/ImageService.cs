@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using UserManagementAPI.Logic.Dtos;
 using UserManagementAPI.Logic.Interfaces;
 
 namespace UserManagementAPI.Logic.Services
@@ -18,19 +19,30 @@ namespace UserManagementAPI.Logic.Services
             _blobService = blobService;
         }
 
-        public async Task<string> UploadImageAsync(IFormFile image)
+        public async Task<Result<string>> UploadUserImageAsync(int userId, IFormFile image)
         {
+            if (image.Length == 0)
+            {
+                throw new Exception("File is empty");
+            }
+
             var stream = image.OpenReadStream();
-            
             var extension = Path.GetExtension(image.FileName);
             var fileName = Guid.NewGuid() + extension;
-
-            //var containerName = _configuration.GetSection("AzureBlobSettings:ImageContainerName").ToString();
             var containerName = _configuration["AzureBlobSettings:ImageContainerName"];
 
-            var result = await _blobService.UploadBlobAsync(stream, fileName, containerName);
+            try
+            {
+                await _blobService.UploadBlobAsync(stream, fileName, containerName);
+            }
+            catch (Exception e)
+            {
+                return new Result<string>(500, e.Message);
+            }
 
-            return fileName;
+
+
+            return new Result<string>(fileName);
         }
     }
 }

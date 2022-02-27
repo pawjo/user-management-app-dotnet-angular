@@ -15,21 +15,17 @@ namespace UserManagementAPI.Logic.Services
         {
             _blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("AzureStorage"));
         }
-        public async Task<bool> UploadBlobAsync(Stream stream, string fileName, string containerName)
+
+        public async Task UploadBlobAsync(Stream stream, string fileName, string containerName)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-            if(!await containerClient.ExistsAsync())
+            if (!await containerClient.ExistsAsync())
             {
                 containerClient = await _blobServiceClient.CreateBlobContainerAsync(containerName);
             }
 
-            if (stream.Length > 0)
-            {
-                var blobClient = containerClient.GetBlobClient(fileName);
-                await blobClient.UploadAsync(stream);
-            }
-
-            return true;
+            var blobClient = containerClient.GetBlobClient(fileName);
+            await blobClient.UploadAsync(stream, true);
         }
     }
 }

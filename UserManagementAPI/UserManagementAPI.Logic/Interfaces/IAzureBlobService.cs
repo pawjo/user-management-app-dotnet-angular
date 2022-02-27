@@ -5,6 +5,6 @@ namespace UserManagementAPI.Logic.Interfaces
 {
     public interface IAzureBlobService
     {
-        Task<bool> UploadBlobAsync(Stream stream, string fileName, string containerName);
+        Task UploadBlobAsync(Stream stream, string fileName, string containerName);
     }
 }
