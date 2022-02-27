@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using UserManagementAPI.Logic.Dtos;
 using UserManagementAPI.Logic.Interfaces;
@@ -18,12 +17,11 @@ namespace UserManagementAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAsync([FromForm] IFormFile image)
+        public async Task<IActionResult> AddAsync([FromBody] AddUserRequest request)
         {
-            var request = new AddUserRequest();
-            var result = await _service.AddAsync(request, image);
+            var result = await _service.AddAsync(request);
 
-            if(result.IsError)
+            if (result.IsError)
             {
                 return StatusCode(result.ErrorCode, result.ErrorMessage);
             }
