@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using UserManagementAPI.Infrastructure;
 using UserManagementAPI.Logic.Interfaces;
 using UserManagementAPI.Logic.MappingProfiles;
 using UserManagementAPI.Logic.Services;
+using UserManagementAPI.Logic.Validators;
 
 namespace UserManagementAPI
 {
@@ -34,7 +36,10 @@ namespace UserManagementAPI
             services.AddScoped<IAzureBlobService, AzureBlobService>();
             services.AddScoped<IImageService, ImageService>();
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv =>
+                    fv.RegisterValidatorsFromAssemblyContaining<AddUserRequestValidator>());
+
             services.AddSwaggerGen(c =>
             {
                 c.OperationFilter<SwaggerFileOperationFilter>();
