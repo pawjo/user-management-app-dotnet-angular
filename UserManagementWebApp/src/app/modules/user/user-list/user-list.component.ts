@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { UserService } from 'src/app/core/user.service';
 import { UserListItem } from 'src/app/shared/models/user-list-item';
+import { AppState } from 'src/app/store/app.state';
+import { loadUserList } from 'src/app/store/user.actions';
+import { selectUsers } from 'src/app/store/user.selectors';
 
 @Component({
   selector: 'app-user-list',
@@ -9,12 +14,12 @@ import { UserListItem } from 'src/app/shared/models/user-list-item';
 })
 export class UserListComponent implements OnInit {
 
-  users: UserListItem[] = [];
+  users$ = this.store.select(selectUsers);
 
-  constructor(private userService: UserService) { }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
-    this.userService.getUserList().subscribe(x => this.users = x);
+    this.store.dispatch(loadUserList());
   }
 
 }
