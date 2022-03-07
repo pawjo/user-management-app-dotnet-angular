@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { UserListItem } from '../shared/models/user-list-item';
+import { User } from '../shared/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class UserService {
 
   private baseUrl = environment.apiUrl + '/user';
 
-  getUserList(): Observable<UserListItem[]> {
-    return this.httpClient.get<UserListItem[]>(this.baseUrl);
+  getUserList(): Observable<User[]> {
+    return this.httpClient.get<User[]>(this.baseUrl);
   }
 }

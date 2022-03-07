@@ -6,6 +6,11 @@ import { AppComponent } from './app.component';
 import { UserListComponent } from './modules/user/user-list/user-list.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { UserEffects } from './store/user.effects';
+import { userReducer } from './store/user.reducer';
+import { userFeatureKey } from './store/userRoot.state';
 
 @NgModule({
   declarations: [
@@ -16,7 +21,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    StoreModule.forRoot({[userFeatureKey]: userReducer}),
+    EffectsModule.forRoot([UserEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]
