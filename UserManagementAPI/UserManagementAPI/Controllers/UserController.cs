@@ -29,7 +29,7 @@ namespace UserManagementAPI.Controllers
                 return StatusCode(result.ErrorCode, result.ErrorMessage);
             }
 
-            return Ok(result.Response);
+            return Ok(result.Value);
         }
 
         [HttpGet]
@@ -37,7 +37,7 @@ namespace UserManagementAPI.Controllers
         {
             var result = await _service.GetListAsync();
 
-            return Ok(result.Response);
+            return Ok(result.Value);
         }
     }
 }

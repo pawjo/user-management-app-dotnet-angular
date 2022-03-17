@@ -23,9 +23,9 @@
 
     public class Result<T> : Result
     {
-        public Result(T response) : base()
+        public Result(T value) : base()
         {
-            Response = response;
+            Value = value;
         }
 
         public Result(int errorCode, string errorMessage) : base(errorCode, errorMessage)
@@ -34,6 +34,6 @@
         public Result(Result result) : base(result)
         { }
 
-        public T Response { get; set; }
+        public T Value { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace UserManagementAPI.Logic.Services
                 return imageNameResult;
             }
 
-            var imageName = imageNameResult.Response;
+            var imageName = imageNameResult.Value;
             var defaultImageName = GetDefaultImageName();
 
             // If user have empty image name it need change to default image name
@@ -83,7 +83,7 @@ namespace UserManagementAPI.Logic.Services
                 return new Result<GetUserImageUrlResponse>(imageNameResult);
             }
 
-            var urlResult = await _imageService.GetImageUrlWithSasTokenAsync(imageNameResult.Response);
+            var urlResult = await _imageService.GetImageUrlWithSasTokenAsync(imageNameResult.Value);
 
             if (urlResult.IsError)
             {
@@ -91,7 +91,7 @@ namespace UserManagementAPI.Logic.Services
             }
 
             var urlData = urlResult as Result<Tuple<string, DateTimeOffset>>;
-            var result = _mapper.Map<GetUserImageUrlResponse>(urlData.Response, opt =>
+            var result = _mapper.Map<GetUserImageUrlResponse>(urlData.Value, opt =>
                 opt.Items["userId"] = userId);
 
             return new Result<GetUserImageUrlResponse>(result);
@@ -106,7 +106,7 @@ namespace UserManagementAPI.Logic.Services
                 return imageNameResult;
             }
 
-            var imageName = imageNameResult.Response;
+            var imageName = imageNameResult.Value;
             if (imageName != GetDefaultImageName())
             {
                 var deleteImageResult = await _imageService.DeleteImageAsync(imageName);
@@ -124,7 +124,7 @@ namespace UserManagementAPI.Logic.Services
                 return imageUploadResult;
             }
 
-            var updateUserResult = await _userService.UpdateImageNameAsync(userId, imageUploadResult.Response);
+            var updateUserResult = await _userService.UpdateImageNameAsync(userId, imageUploadResult.Value);
 
             if (updateUserResult.IsError)
             {

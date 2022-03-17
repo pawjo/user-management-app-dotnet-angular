@@ -40,7 +40,7 @@ namespace UserManagementAPI.Controllers
                 return StatusCode(result.ErrorCode, result.ErrorMessage);
             }
 
-            return Ok(result.Response);
+            return Ok(result.Value);
         }
 
         [HttpPut(userIdParam)]
