@@ -8,7 +8,7 @@ namespace UserManagementAPI.Logic.Interfaces
     {
         Task<Result> DeleteUserImageAsync(int userId);
 
-        Task<Result<string>> GetUserImageUrlAsync(int userId);
+        Task<Result<GetUserImageUrlResponse>> GetUserImageUrlAsync(int userId);
 
         Task<Result> UpdateUserImageAsync(int userId, IFormFile image);
     }

@@ -10,6 +10,6 @@ namespace UserManagementAPI.Logic.Interfaces
 
         Task<Result> DeleteImageAsync(string name);
 
-        Task<Result<string>> GetImageUrlWithSasTokenAsync(string imageName);
+        Task<Result> GetImageUrlWithSasTokenAsync(string imageName);
     }
 }

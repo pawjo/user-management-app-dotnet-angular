@@ -11,6 +11,9 @@
             ErrorMessage = errorMessage;
         }
 
+        public Result(Result result) : this(result.ErrorCode, result.ErrorMessage)
+        { }
+
         public int ErrorCode { get; set; }
 
         public string ErrorMessage { get; set; }
@@ -26,6 +29,9 @@
         }
 
         public Result(int errorCode, string errorMessage) : base(errorCode, errorMessage)
+        { }
+
+        public Result(Result result) : base(result)
         { }
 
         public T Response { get; set; }

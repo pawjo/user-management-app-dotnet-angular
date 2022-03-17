@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Threading.Tasks;
 using UserManagementAPI.Logic.Dtos;
 using UserManagementAPI.Logic.Interfaces;
@@ -11,13 +13,15 @@ namespace UserManagementAPI.Logic.Services
         private readonly IImageService _imageService;
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
 
-        public UserImageService(IImageService imageService, IUserService userService, IConfiguration configuration)
+        public UserImageService(IImageService imageService, IUserService userService, IConfiguration configuration, IMapper mapper)
         {
             _imageService = imageService;
             _userService = userService;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<Result> DeleteUserImageAsync(int userId)
@@ -70,17 +74,27 @@ namespace UserManagementAPI.Logic.Services
             return result;
         }
 
-        public async Task<Result<string>> GetUserImageUrlAsync(int userId)
+        public async Task<Result<GetUserImageUrlResponse>> GetUserImageUrlAsync(int userId)
         {
             var imageNameResult = await _userService.GetUserImageNameAsync(userId);
 
             if (imageNameResult.IsError)
             {
-                return imageNameResult;
+                return new Result<GetUserImageUrlResponse>(imageNameResult);
             }
 
             var urlResult = await _imageService.GetImageUrlWithSasTokenAsync(imageNameResult.Response);
-            return urlResult;
+
+            if (urlResult.IsError)
+            {
+                return new Result<GetUserImageUrlResponse>(urlResult);
+            }
+
+            var urlData = urlResult as Result<Tuple<string, DateTimeOffset>>;
+            var result = _mapper.Map<GetUserImageUrlResponse>(urlData.Response, opt =>
+                opt.Items["userId"] = userId);
+
+            return new Result<GetUserImageUrlResponse>(result);
         }
 
         public async Task<Result> UpdateUserImageAsync(int userId, IFormFile image)
@@ -122,5 +136,8 @@ namespace UserManagementAPI.Logic.Services
 
         private string GetDefaultImageName() =>
             _configuration["AzureBlobSettings:DefaultUserImageName"];
+
+        private string GetUrlExpirationTime() =>
+            _configuration["AzureBlobSettings:SasTokenExpirationTimeInMinutes"];
     }
 }

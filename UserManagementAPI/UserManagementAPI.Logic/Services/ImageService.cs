@@ -24,7 +24,7 @@ namespace UserManagementAPI.Logic.Services
         public async Task<Result> DeleteImageAsync(string name)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-            
+
             if (!await containerClient.ExistsAsync())
             {
                 return new Result(500, "Container with specified name not exists");
@@ -36,28 +36,31 @@ namespace UserManagementAPI.Logic.Services
             return new Result();
         }
 
-        public async Task<Result<string>> GetImageUrlWithSasTokenAsync(string imageName)
+        public async Task<Result> GetImageUrlWithSasTokenAsync(string imageName)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
             if (!await containerClient.ExistsAsync())
             {
-                return new Result<string>(500,"Container with specified name not exists");
+                return new Result(500, "Container with specified name not exists");
             }
 
             var blobClient = containerClient.GetBlobClient(imageName);
             if (!await blobClient.ExistsAsync())
             {
-                return new Result<string>(404, "Image not exists");
+                return new Result(404, "Image not exists");
             }
+
 
             if (blobClient.CanGenerateSasUri)
             {
-                var url = blobClient.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddMinutes(10));
-                return new Result<string>(url.ToString());
+                var builder = new BlobSasBuilder(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddMinutes(10));
+                var url = blobClient.GenerateSasUri(builder);
+                var result = Tuple.Create(url.ToString(), builder.ExpiresOn);
+                return new Result<Tuple<string, DateTimeOffset>>(result);
             }
             else
             {
-                return new Result<string>(500, "Unable to generate uri for this blob");
+                return new Result(500, "Unable to generate uri for this blob");
             }
         }
 
@@ -77,7 +80,7 @@ namespace UserManagementAPI.Logic.Services
             {
                 containerClient = await _blobServiceClient.CreateBlobContainerAsync(_containerName);
 
-                if(!await containerClient.ExistsAsync())
+                if (!await containerClient.ExistsAsync())
                 {
                     return new Result<string>(500, "Unable to create container for images");
                 }
