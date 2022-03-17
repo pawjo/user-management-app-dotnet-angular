@@ -33,6 +33,12 @@ namespace UserManagementAPI.Logic.Services
             return new Result();
         }
 
+        public async Task<Result<string>> GetImageUrlWithSasTokenAsync(string imageName)
+        {
+            try
+            return new Result<string>(await _blobService.GetSasUrlAsync(imageName, _containerName));
+        }
+
         public async Task<Result<string>> UploadImageAsync(IFormFile image)
         {
             if (image.Length == 0)

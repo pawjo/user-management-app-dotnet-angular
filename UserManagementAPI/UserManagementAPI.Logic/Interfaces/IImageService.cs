@@ -9,5 +9,7 @@ namespace UserManagementAPI.Logic.Interfaces
         Task<Result<string>> UploadImageAsync(IFormFile image);
 
         Task<Result> DeleteImageAsync(string name);
+
+        Task<Result<string>> GetImageUrlWithSasTokenAsync(string imageName);
     }
 }

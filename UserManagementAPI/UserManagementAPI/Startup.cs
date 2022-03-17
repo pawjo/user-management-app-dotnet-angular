@@ -40,6 +40,7 @@ namespace UserManagementAPI
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAzureBlobService, AzureBlobService>();
             services.AddScoped<IImageService, ImageService>();
+            services.AddScoped<IUserImageService, UserImageService>();
 
             services.AddControllers()
                 .AddFluentValidation(fv =>
