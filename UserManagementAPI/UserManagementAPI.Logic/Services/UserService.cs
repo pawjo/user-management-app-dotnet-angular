@@ -50,7 +50,7 @@ namespace UserManagementAPI.Logic.Services
             {
                 return new Result(404, "User not found");
             }
-            
+
             var defaultImageName = GetDefaultImageName();
 
             // If user have empty image name it need change to default image name
@@ -95,6 +95,31 @@ namespace UserManagementAPI.Logic.Services
             var response = _mapper.Map<IEnumerable<UserListItemDto>>(users);
 
             return new Result<IEnumerable<UserListItemDto>>(response);
+        }
+
+        public async Task<Result<GetUserByIdResponse>> GetUserById(int userId)
+        {
+            var user = await GetSingleUserById(userId);
+
+            if (user == null)
+            {
+                return new Result<GetUserByIdResponse>(404, "User not found");
+            }
+
+            var response = _mapper.Map<GetUserByIdResponse>(user);
+            return new Result<GetUserByIdResponse>(response);
+        }
+
+        public async Task<Result<string>> GetUserImageNameAsync(int userId)
+        {
+            var user = await GetSingleUserById(userId);
+
+            if (user == null)
+            {
+                return new Result<string>(404, "User not found");
+            }
+
+            return new Result<string>(user.ImageName);
         }
 
         public async Task<Result> UpdateUserImageAsync(int userId, IFormFile image)

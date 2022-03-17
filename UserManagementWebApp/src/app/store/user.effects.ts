@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../core/user.service";
 import { map, mergeMap, catchError, exhaustMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { loadUserList, loadUserListError, loadUserListSuccess } from "./user.actions";
+import { loadUserDetails, loadUserList, loadUserListError, loadUserListSuccess } from "./user.actions";
 
 
 @Injectable()
@@ -18,6 +18,11 @@ export class UserEffects {
             ))
         )
     );
+
+    // loadUserDetails$=createEffect(()=> this.actions$.pipe(
+    //     ofType(loadUserDetails),
+    //     exhaustMap(()=>this.userService)
+    // ))
 
     constructor(private actions$: Actions,
         private userService: UserService) { }

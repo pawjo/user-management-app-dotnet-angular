@@ -13,6 +13,8 @@ namespace UserManagementAPI.Logic.MappingProfiles
                    opt.MapFrom((src, dest, destMember, ctx) => ctx.Items["defaultImageName"]));
 
             CreateMap<User, UserListItemDto>();
+
+            CreateMap<User, GetUserByIdResponse>();
         }
     }
 }
