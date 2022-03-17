@@ -39,31 +39,5 @@ namespace UserManagementAPI.Controllers
 
             return Ok(result.Response);
         }
-
-        [HttpPut(imageRoute)]
-        public async Task<IActionResult> UpdateUserImageAsync([FromForm] IFormFile image, [FromRoute] int userId)
-        {
-            var result = await _service.UpdateUserImageAsync(userId, image);
-
-            if (result.IsError)
-            {
-                return StatusCode(result.ErrorCode, result.ErrorMessage);
-            }
-
-            return Ok();
-        }
-
-        [HttpDelete(imageRoute)]
-        public async Task<IActionResult> DeleteUserImageAsync([FromRoute] int userId)
-        {
-            var result = await _service.DeleteUserImageAsync(userId);
-
-            if (result.IsError)
-            {
-                return StatusCode(result.ErrorCode, result.ErrorMessage);
-            }
-
-            return Ok();
-        }
     }
 }

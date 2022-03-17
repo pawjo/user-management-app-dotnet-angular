@@ -38,7 +38,6 @@ namespace UserManagementAPI
             services.AddAutoMapper(cfg => cfg.AddProfile<UserMappingProfile>());
 
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IAzureBlobService, AzureBlobService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IUserImageService, UserImageService>();
 

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
@@ -15,14 +14,12 @@ namespace UserManagementAPI.Logic.Services
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
-        private readonly IImageService _imageService;
         private readonly IConfiguration _configuration;
 
-        public UserService(DatabaseContext context, IMapper mapper, IImageService imageService, IConfiguration configuration)
+        public UserService(DatabaseContext context, IMapper mapper, IConfiguration configuration)
         {
             _context = context;
             _mapper = mapper;
-            _imageService = imageService;
             _configuration = configuration;
         }
 
@@ -40,52 +37,6 @@ namespace UserManagementAPI.Logic.Services
             }
 
             return new Result<int>(500, "Adding user data error");
-        }
-
-        public async Task<Result> DeleteUserImageAsync(int userId)
-        {
-            var user = await GetSingleUserById(userId);
-
-            if (user == null)
-            {
-                return new Result(404, "User not found");
-            }
-
-            var defaultImageName = GetDefaultImageName();
-
-            // If user have empty image name it need change to default image name
-            var isUpdateNeeded = string.IsNullOrWhiteSpace(user.ImageName);
-
-            // User have image if he doesn't have default or empty image name
-            var userHaveImage = user.ImageName != defaultImageName && !isUpdateNeeded;
-
-            if (userHaveImage)
-            {
-                var deleteImageResult = await _imageService.DeleteImageAsync(user.ImageName);
-
-                if (deleteImageResult.IsError)
-                {
-                    return new Result(500, "Delete image error");
-                }
-
-                isUpdateNeeded = true;
-            }
-
-            if (isUpdateNeeded)
-            {
-                var updated = await UpdateAndSaveUserImageName(user, defaultImageName);
-                if (updated != 1)
-                {
-                    return new Result(500, "User image name update failed");
-                }
-            }
-
-            if (!userHaveImage)
-            {
-                return new Result(400, "User already doesn't have an image");
-            }
-
-            return new Result();
         }
 
         public async Task<Result<IEnumerable<UserListItemDto>>> GetListAsync()
@@ -122,7 +73,7 @@ namespace UserManagementAPI.Logic.Services
             return new Result<string>(user.ImageName);
         }
 
-        public async Task<Result> UpdateUserImageAsync(int userId, IFormFile image)
+        public async Task<Result> UpdateImageNameAsync(int userId, string newImageName)
         {
             var user = await GetSingleUserById(userId);
 
@@ -131,18 +82,11 @@ namespace UserManagementAPI.Logic.Services
                 return new Result(404, "User not found");
             }
 
-            var imageUploadResult = await _imageService.UploadImageAsync(image);
-
-            if (imageUploadResult.IsError)
-            {
-                return imageUploadResult;
-            }
-
-            var updated = await UpdateAndSaveUserImageName(user, imageUploadResult.Response);
-
+            user.ImageName = newImageName;
+            var updated = await _context.SaveChangesAsync();
             if (updated != 1)
             {
-                return new Result(500, "User update error");
+                return new Result(500, "Update user image name failed");
             }
 
             return new Result();
@@ -153,11 +97,5 @@ namespace UserManagementAPI.Logic.Services
 
         private async Task<User> GetSingleUserById(int userId) =>
             await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
-
-        private async Task<int> UpdateAndSaveUserImageName(User user, string newImageName)
-        {
-            user.ImageName = newImageName;
-            return await _context.SaveChangesAsync();
-        }
     }
 }
