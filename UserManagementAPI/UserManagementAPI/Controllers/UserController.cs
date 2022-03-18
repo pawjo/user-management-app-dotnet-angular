@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using UserManagementAPI.Logic.Dtos;
 using UserManagementAPI.Logic.Interfaces;
@@ -11,8 +10,7 @@ namespace UserManagementAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _service;
-
-        private const string imageRoute = "/image/{userId}";
+        private const string userIdParam = "/{userId}";
 
         public UserController(IUserService service)
         {
@@ -36,6 +34,19 @@ namespace UserManagementAPI.Controllers
         public async Task<IActionResult> GetListAsync()
         {
             var result = await _service.GetListAsync();
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("details" + userIdParam)]
+        public async Task<IActionResult> GetById([FromRoute]int userId)
+        {
+            var result = await _service.GetUserById(userId);
+
+            if (result.IsError)
+            {
+                return StatusCode(result.ErrorCode, result.ErrorMessage);
+            }
 
             return Ok(result.Value);
         }
