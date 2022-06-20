@@ -11,6 +11,8 @@ namespace UserManagementAPI.Logic.Interfaces
 
         Task<Result> DeleteUserImageAsync(int userId);
 
+        Task<Result<UserDetailsDto>> GetDetailsAsync(int userId);
+
         Task<Result<IEnumerable<UserListItemDto>>> GetListAsync();
 
         Task<Result> UpdateUserImageAsync(int userId, IFormFile image);

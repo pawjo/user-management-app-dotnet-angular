@@ -1,6 +1,6 @@
-﻿namespace UserManagementAPI.Infrastructure.Models
+﻿namespace UserManagementAPI.Logic.Dtos
 {
-    public class User
+    public class UserDetailsDto
     {
         public int Id { get; set; }
         public string Email { get; set; }

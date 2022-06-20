@@ -88,6 +88,20 @@ namespace UserManagementAPI.Logic.Services
             return new Result();
         }
 
+        public async Task<Result<UserDetailsDto>> GetDetailsAsync(int userId)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return new Result<UserDetailsDto>(404, "User not found");
+            }
+
+            var response = _mapper.Map<UserDetailsDto>(user);
+
+            return new Result<UserDetailsDto>(response);
+        }
+
         public async Task<Result<IEnumerable<UserListItemDto>>> GetListAsync()
         {
             var users = await _context.Users.ToListAsync();

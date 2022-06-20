@@ -40,6 +40,19 @@ namespace UserManagementAPI.Controllers
             return Ok(result.Response);
         }
 
+        [HttpGet("/details/{userId}")]
+        public async Task<IActionResult> GetDetailsAsync([FromRoute] int userId)
+        {
+            var result = await _service.GetDetailsAsync(userId);
+
+            if (result.IsError)
+            {
+                return StatusCode(result.ErrorCode, result.ErrorMessage);
+            }
+
+            return Ok(result.Response);
+        }
+
         [HttpPut(imageRoute)]
         public async Task<IActionResult> UpdateUserImageAsync([FromForm] IFormFile image, [FromRoute] int userId)
         {
