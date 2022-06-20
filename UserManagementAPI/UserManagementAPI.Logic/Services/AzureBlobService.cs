@@ -1,8 +1,10 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using UserManagementAPI.Logic.Dtos;
 using UserManagementAPI.Logic.Interfaces;
 
 namespace UserManagementAPI.Logic.Services
@@ -10,23 +12,56 @@ namespace UserManagementAPI.Logic.Services
 
     public class AzureBlobService : IAzureBlobService
     {
-        private BlobServiceClient _blobServiceClient;
+        private readonly IConfiguration _configuration;
+        private readonly BlobServiceClient _blobServiceClient;
 
         public AzureBlobService(IConfiguration configuration)
         {
-            _blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("AzureStorage"));
+            _configuration = configuration;
+            _blobServiceClient = new BlobServiceClient(_configuration.GetConnectionString("AzureStorage"));
         }
 
         public async Task DeleteBlobAsync(string name, string containerName)
         {
-            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-            if (!await containerClient.ExistsAsync())
+            var blobClient = await GetExistingBlobClient(name, containerName);
+            await blobClient.DeleteIfExistsAsync();
+        }
+
+
+
+        public async Task<Result<SasUrlDto>> GetServiceSasUriForBlob(string name, string containerName)
+        {
+            var blobClient = await GetExistingBlobClient(name, containerName);
+
+            if(!await blobClient.ExistsAsync())
             {
-                throw new Exception("Container with specified name not exists");
+                return new Result<SasUrlDto>(404,"Not found image");
             }
 
-            var blobClient = containerClient.GetBlobClient(name);
-            await blobClient.DeleteIfExistsAsync();
+            if (blobClient.CanGenerateSasUri)
+            {
+                var expirationTime = int.Parse(_configuration["AzureBlobSettings:SasExpirationTimeInMinutes"]);
+
+                var sasBuilder = new BlobSasBuilder
+                {
+                    BlobContainerName = containerName,
+                    BlobName = name,
+                    Resource = "b",
+                    ExpiresOn = DateTimeOffset.UtcNow.AddHours(expirationTime)
+                };
+                sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+                var sasUri = blobClient.GenerateSasUri(sasBuilder);
+                var result = new SasUrlDto
+                {
+                    Url = sasUri.ToString(),
+                    ExpiresOn = sasBuilder.ExpiresOn.DateTime
+                };
+
+                return new Result<SasUrlDto>(result);
+            }
+
+            return new Result<SasUrlDto>(400, "Cannot generate sas uri");
         }
 
         public async Task UploadBlobAsync(Stream stream, string fileName, string containerName)
@@ -39,6 +74,17 @@ namespace UserManagementAPI.Logic.Services
 
             var blobClient = containerClient.GetBlobClient(fileName);
             await blobClient.UploadAsync(stream, true);
+        }
+
+        private async Task<BlobClient> GetExistingBlobClient(string name, string containerName)
+        {
+            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            if (!await containerClient.ExistsAsync())
+            {
+                throw new Exception("Container with specified name not exists");
+            }
+            var blobClient = containerClient.GetBlobClient(name);
+            return blobClient;
         }
     }
 }

@@ -6,6 +6,7 @@ using UserManagementAPI.Logic.Interfaces;
 
 namespace UserManagementAPI.Controllers
 {
+
     [ApiController]
     [Route("[controller]")]
     public class UserController : ControllerBase
