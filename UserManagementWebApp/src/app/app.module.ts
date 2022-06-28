@@ -11,11 +11,13 @@ import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './store/user.effects';
 import { userReducer } from './store/user.reducer';
 import { userFeatureKey } from './store/userRoot.state';
+import { UserDetailsComponent } from './modules/user/user-details/user-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserListComponent
+    UserListComponent,
+    UserDetailsComponent
   ],
   imports: [
     BrowserModule,

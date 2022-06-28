@@ -16,7 +16,7 @@ namespace UserManagementAPI.Controllers
             _imageService = imageService;
         }
 
-        [HttpGet("/sas/{name}")]
+        [HttpGet("sas/{name}")]
         public async Task<IActionResult> GetSasUrlAsync([FromRoute] string name)
         {
             var result = await _imageService.GetImageUrlAsync(name);

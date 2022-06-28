@@ -41,7 +41,7 @@ namespace UserManagementAPI.Controllers
             return Ok(result.Response);
         }
 
-        [HttpGet("/details/{userId}")]
+        [HttpGet("details/{userId}")]
         public async Task<IActionResult> GetDetailsAsync([FromRoute] int userId)
         {
             var result = await _service.GetDetailsAsync(userId);

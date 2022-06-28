@@ -6,3 +6,6 @@ export const selectUserFeature = createFeatureSelector<UserState>(userFeatureKey
 
 export const selectUsers = createSelector(selectUserFeature, (state: UserState) =>
     state.users);
+
+export const selectUserDetails = createSelector(selectUserFeature, (state: UserState) =>
+    state.userDetails);
