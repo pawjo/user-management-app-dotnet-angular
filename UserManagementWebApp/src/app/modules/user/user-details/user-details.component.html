@@ -1,17 +1,26 @@
-<table>
-    <tr>
-        <th>Id</th>
-        <td>{{user?.id}}</td>
-    <tr>
-        <th>Name</th>
-        <td>{{user?.name}} {{user?.surname}}</td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td>{{user?.email}}</td>
-    </tr>
-    <tr>
-        <th>Age</th>
-        <td>{{user?.age}}</td>
-    </tr>
-</table>
+<div class="container">
+    <div class="p-4">
+        <h1 class="display-4">User details</h1>
+    </div>
+    <div>
+        <table class="table table-borderless">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{user?.id}}</td>
+                <tr>
+                    <th>Name</th>
+                    <td>{{user?.name}} {{user?.surname}}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{user?.email}}</td>
+                </tr>
+                <tr>
+                    <th>Age</th>
+                    <td>{{user?.age}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
