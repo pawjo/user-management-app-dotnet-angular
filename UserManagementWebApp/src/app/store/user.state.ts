@@ -1,7 +1,8 @@
-import { User } from "../shared/models/user";
+import { UserDetails } from "../shared/models/user-details";
+import { UserListItem } from "../shared/models/user-list-item";
 
 export interface UserState {
-    users: User[],
-    userDetails: User
+    users: UserListItem[],
+    userDetails: UserDetails
 }
 

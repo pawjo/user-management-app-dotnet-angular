@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { User } from 'src/app/shared/models/user';
+import { UserDetails } from 'src/app/shared/models/user-details';
+import { UserImage } from 'src/app/shared/models/user-image';
+import { UserListItem } from 'src/app/shared/models/user-list-item';
 import { AppState } from 'src/app/store/app.state';
 import { loadUserDetails } from 'src/app/store/user.actions';
 import { selectUserDetails } from 'src/app/store/user.selectors';
@@ -15,7 +17,7 @@ export class UserDetailsComponent implements OnInit {
 
   userId: number = 0;
 
-  user?: User;
+  user?: UserDetails;
 
   constructor(private store: Store<AppState>,
     private route: ActivatedRoute) { }
@@ -25,8 +27,15 @@ export class UserDetailsComponent implements OnInit {
     this.userId = parseInt(param!);
     this.store.dispatch(loadUserDetails({ userId: this.userId }));
     this.store.select(selectUserDetails).subscribe(x => {
+      // if (!x.image) {
+      //   x.image = { name: '', url: this.userImageUrl, expiresOn: new Date() };
+      // }
       this.user = x;
     });
+  }
+
+  get userImageUrl(): string {
+    return this.user?.image ? this.user?.image.url : '';
   }
 
 }

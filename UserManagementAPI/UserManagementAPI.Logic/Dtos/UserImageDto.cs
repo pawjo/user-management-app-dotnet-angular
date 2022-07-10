@@ -2,7 +2,7 @@
 
 namespace UserManagementAPI.Logic.Dtos
 {
-    public class SasUrlDto
+    public class UserImageDto
     {
         public string Name { get; set; }
 

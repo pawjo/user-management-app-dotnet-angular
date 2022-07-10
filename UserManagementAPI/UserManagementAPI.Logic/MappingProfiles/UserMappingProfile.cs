@@ -14,7 +14,9 @@ namespace UserManagementAPI.Logic.MappingProfiles
 
             CreateMap<User, UserListItemDto>();
 
-            CreateMap<User, UserDetailsDto>();
+            CreateMap<User, UserDetailsDto>()
+                .ForMember(dest => dest.Image, opt =>
+                   opt.MapFrom((src, dest, destMember, ctx) => ctx.Items["userImage"]));
         }
     }
 }
