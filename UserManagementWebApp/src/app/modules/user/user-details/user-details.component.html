@@ -2,30 +2,35 @@
     <div class="p-4">
         <h1 class="display-4">User details</h1>
     </div>
-    <div class="row">
-        <div class="col-6">
-            <table class="table table-borderless">
-                <tbody>
-                    <tr>
-                        <th>Id</th>
-                        <td>{{user?.id}}</td>
-                    <tr>
-                        <th>Name</th>
-                        <td>{{user?.name}} {{user?.surname}}</td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>{{user?.email}}</td>
-                    </tr>
-                    <tr>
-                        <th>Age</th>
-                        <td>{{user?.age}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="col-6">
-            <img class="img-thumbnail user-img" [src]="userImageUrl">
+    <div *ngIf="(user$ | async) as user; else loading">
+        <div class="row" *ngIf="user.id == userId; else loading">
+            <div class="col-6">
+                <table class="table table-borderless">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{user.id}}</td>
+                        <tr>
+                            <th>Name</th>
+                            <td>{{user.name}} {{user.surname}}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{user.email}}</td>
+                        </tr>
+                        <tr>
+                            <th>Age</th>
+                            <td>{{user.age}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-6">
+                <img class="img-thumbnail user-img" [src]="user.image.url">
+            </div>
         </div>
     </div>
+    <ng-template #loading>
+        Loading...
+    </ng-template>
 </div>
