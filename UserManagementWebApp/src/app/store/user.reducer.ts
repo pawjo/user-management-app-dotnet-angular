@@ -9,7 +9,12 @@ const initialState: UserState = {
         name: '',
         surname: '',
         age: 0,
-        email: ''
+        email: '',
+        image: {
+            name: '',
+            url: 'assets/user_icon.png',
+            expiresOn: new Date()
+        }
     }
 };
 

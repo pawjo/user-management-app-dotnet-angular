@@ -33,9 +33,9 @@ namespace UserManagementAPI.Logic.Services
         {
             var blobClient = await GetExistingBlobClient(name, containerName);
 
-            if(!await blobClient.ExistsAsync())
+            if (!await blobClient.ExistsAsync())
             {
-                return new Result<SasUrlDto>(404,"Not found image");
+                return new Result<SasUrlDto>(404, "Not found file");
             }
 
             if (blobClient.CanGenerateSasUri)
@@ -54,6 +54,7 @@ namespace UserManagementAPI.Logic.Services
                 var sasUri = blobClient.GenerateSasUri(sasBuilder);
                 var result = new SasUrlDto
                 {
+                    Name = name,
                     Url = sasUri.ToString(),
                     ExpiresOn = sasBuilder.ExpiresOn.DateTime
                 };

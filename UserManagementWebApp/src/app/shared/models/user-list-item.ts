@@ -1,4 +1,4 @@
-export interface User {
+export interface UserListItem {
     id: number,
     email: string,
     name: string,

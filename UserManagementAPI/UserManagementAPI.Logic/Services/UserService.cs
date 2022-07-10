@@ -97,7 +97,15 @@ namespace UserManagementAPI.Logic.Services
                 return new Result<UserDetailsDto>(404, "User not found");
             }
 
-            var response = _mapper.Map<UserDetailsDto>(user);
+            var imageResult = await _imageService.GetImageUrlAsync(user.ImageName);
+
+            if (imageResult.IsError)
+            {
+                return new Result<UserDetailsDto>(imageResult.ErrorCode, imageResult.ErrorMessage);
+            }
+
+            var response = _mapper.Map<UserDetailsDto>(user, opt =>
+                opt.Items["userImage"] = imageResult.Response);
 
             return new Result<UserDetailsDto>(response);
         }

@@ -2,7 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { User } from '../shared/models/user';
+import { UserDetails } from '../shared/models/user-details';
+import { UserListItem } from '../shared/models/user-list-item';
+import { tap } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +15,12 @@ export class UserService {
 
   private baseUrl = environment.apiUrl + '/user';
 
-  getUserList(): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.baseUrl);
+  getUserList(): Observable<UserListItem[]> {
+    return this.httpClient.get<UserListItem[]>(this.baseUrl);
   }
 
-  getUserDetails(userId: number): Observable<User> {
-    return this.httpClient.get<User>(`${this.baseUrl}/details/${userId}`);
+  getUserDetails(userId: number): Observable<UserDetails> {
+    return this.httpClient.get<UserDetails>(`${this.baseUrl}/details/${userId}`)
+      .pipe(tap(x => console.log(x)));
   }
 }
