@@ -16,6 +16,8 @@ export class UserDetailsComponent implements OnInit {
 
   user$ = this.store.select(selectUserDetails);
 
+  // defaultImage$ = this.store.select(selectDefaultImage);
+
   constructor(private store: Store<AppState>,
     private route: ActivatedRoute) { }
   
@@ -24,17 +26,5 @@ export class UserDetailsComponent implements OnInit {
     const param = this.route.snapshot.paramMap.get('userId');
     this.userId = parseInt(param!);
     this.store.dispatch(loadUserDetails({ userId: this.userId }));
-    // this.store.select(selectUserDetails).subscribe(x => {
-    //   // if (!x.image) {
-    //   //   x.image = { name: '', url: this.userImageUrl, expiresOn: new Date() };
-    //   // }
-    //   this.user = x;
-    // });
   }
-
-
-  // get userImageUrl(): string {
-  //   return this.user?.image ? this.user?.image.url : '';
-  // }
-
 }

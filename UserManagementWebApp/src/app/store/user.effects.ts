@@ -4,6 +4,7 @@ import { UserService } from "../core/user.service";
 import { map, catchError, exhaustMap, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserList, loadUserListError, loadUserListSuccess } from "./user.actions";
+import { ImageService } from "../core/image.service";
 
 
 @Injectable()
@@ -22,13 +23,24 @@ export class UserEffects {
         ofType(loadUserDetails),
         switchMap(action => this.userService.getUserDetails(action.userId)
             .pipe(
-                map(user => {
-                    return loadUserDetailsSuccess({ userDetails: user });
-                }),
+                map(user => loadUserDetailsSuccess({ userDetails: user })),
                 catchError(() => of(loadUserDetailsError()))
             ))
     ));
 
+    // loadDefaultImage$ = createEffect(() => this.actions$.pipe(
+    //     ofType(loadDefaultImage),
+    //     switchMap(() => this.imageService.getImageByName('default.png')
+    //         .pipe(
+    //             map(image => {
+    //                 console.log(image);
+    //                 return loadDefaultImageSuccess({ defaultImage: image });
+    //             }),
+    //             catchError(() => of(loadDefaultImageError()))
+    //         ))
+    // ));
+
     constructor(private actions$: Actions,
-        private userService: UserService) { }
+        private userService: UserService,
+        private imageService: ImageService) { }
 }

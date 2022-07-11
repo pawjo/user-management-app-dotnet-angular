@@ -6,5 +6,6 @@ export interface UserDetails {
     name: string,
     surname: string,
     age: number,
+    isDefaultImage: boolean,
     image: UserImage
 }

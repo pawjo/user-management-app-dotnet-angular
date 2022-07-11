@@ -50,7 +50,7 @@ namespace UserManagementAPI.Logic.Services
             {
                 return new Result(404, "User not found");
             }
-            
+
             var defaultImageName = GetDefaultImageName();
 
             // If user have empty image name it need change to default image name
@@ -97,15 +97,20 @@ namespace UserManagementAPI.Logic.Services
                 return new Result<UserDetailsDto>(404, "User not found");
             }
 
-            var imageResult = await _imageService.GetImageUrlAsync(user.ImageName);
+            SasUrlDto image = null;
 
-            if (imageResult.IsError)
+            if (!string.IsNullOrWhiteSpace(user.ImageName))
             {
-                return new Result<UserDetailsDto>(imageResult.ErrorCode, imageResult.ErrorMessage);
+                var imageResult = await _imageService.GetImageUrlAsync(user.ImageName);
+                if (imageResult.IsError)
+                {
+                    return new Result<UserDetailsDto>(imageResult.ErrorCode, imageResult.ErrorMessage);
+                }
+                image = imageResult.Response;
             }
 
             var response = _mapper.Map<UserDetailsDto>(user, opt =>
-                opt.Items["userImage"] = imageResult.Response);
+                opt.Items["userImage"] = image);
 
             return new Result<UserDetailsDto>(response);
         }
