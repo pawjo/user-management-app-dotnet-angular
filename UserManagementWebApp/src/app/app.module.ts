@@ -12,12 +12,15 @@ import { UserEffects } from './store/user.effects';
 import { userReducer } from './store/user.reducer';
 import { userFeatureKey } from './store/userRoot.state';
 import { UserDetailsComponent } from './modules/user/user-details/user-details.component';
+import { FormComponent } from './modules/user/form/form.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     UserListComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    FormComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,8 @@ import { UserDetailsComponent } from './modules/user/user-details/user-details.c
     AppRoutingModule,
     NgbModule,
     StoreModule.forRoot({[userFeatureKey]: userReducer}),
-    EffectsModule.forRoot([UserEffects])
+    EffectsModule.forRoot([UserEffects]),
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

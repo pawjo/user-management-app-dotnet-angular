@@ -1,0 +1,21 @@
+<div class="p-4">
+    <h1 class="display-4">Edit user</h1>
+</div>
+<div class="row">
+    <form class="col-6" [formGroup]="userForm">
+        <div class="form-group">
+            <label for="name">First name</label>
+            <input class="form-control" id="name" type="text" formControlName="name">
+        </div>
+        <div class="form-group">
+            <label for="surname">Surame</label>
+            <input class="form-control" id="surname" type="text" formControlName="surname">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input class="form-control" id="email" type="text" formControlName="email">
+        </div>
+        <button class="btn btn-primary">Save</button>
+        <button class="btn btn-light mx-2">Cancel</button>
+    </form>
+</div>
