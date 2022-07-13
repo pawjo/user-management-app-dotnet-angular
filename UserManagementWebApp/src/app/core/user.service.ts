@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { UserDetails } from '../shared/models/user-details';
 import { UserListItem } from '../shared/models/user-list-item';
 import { tap } from 'rxjs/operators'
+import { NewUser } from '../shared/models/new-user';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +23,9 @@ export class UserService {
   getUserDetails(userId: number): Observable<UserDetails> {
     return this.httpClient.get<UserDetails>(`${this.baseUrl}/details/${userId}`)
       .pipe(tap(x => console.log(x)));
+  }
+
+  addNewUser(newUser: NewUser): Observable<number> {
+    return this.httpClient.post<number>(this.baseUrl, newUser);
   }
 }

@@ -14,3 +14,11 @@ export const loadUserDetailsError = createAction('[User details] Load details er
 // export const loadDefaultImage = createAction('[Default image] Load');
 // export const loadDefaultImageSuccess = createAction('[Default image] Load success', props<{defaultImage: UserImage}>());
 // export const loadDefaultImageError = createAction('[Default image] Load error');
+
+export const saveNewUser = createAction('[New user] Save');
+export const saveNewUserSuccess = createAction('[New user] Save success');
+export const saveNewUserError = createAction('[New user] Save error');
+
+// export const saveEditedUser = createAction('[Edit user] Save');
+// export const saveEditedUserSuccess = createAction('[Edit user] Save success');
+// export const saveEditedUserError = createAction('[Edit user] Save error');

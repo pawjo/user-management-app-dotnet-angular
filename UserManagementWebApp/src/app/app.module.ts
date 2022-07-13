@@ -14,6 +14,8 @@ import { userFeatureKey } from './store/userRoot.state';
 import { UserDetailsComponent } from './modules/user/user-details/user-details.component';
 import { FormComponent } from './modules/user/form/form.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgrxFormsModule } from 'ngrx-forms';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     NgbModule,
     StoreModule.forRoot({[userFeatureKey]: userReducer}),
     EffectsModule.forRoot([UserEffects]),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgrxFormsModule,
+    StoreDevtoolsModule.instrument()
   ],
   providers: [],
   bootstrap: [AppComponent]

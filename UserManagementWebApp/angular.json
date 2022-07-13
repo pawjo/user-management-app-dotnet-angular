@@ -100,5 +100,7 @@
             }
         }
     },
-    "defaultProject": "UserManagementWebApp"
+    "cli": {
+      "analytics": false
+    }
 }

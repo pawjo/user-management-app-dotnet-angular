@@ -1,10 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../core/user.service";
-import { map, catchError, exhaustMap, switchMap } from 'rxjs/operators';
+import { map, catchError, exhaustMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserList, loadUserListError, loadUserListSuccess } from "./user.actions";
+import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess } from "./user.actions";
 import { ImageService } from "../core/image.service";
+import { AppState } from "./app.state";
+import { Store } from "@ngrx/store";
+import { selectUserForm } from "./user.selectors";
+import { NewUser } from "../shared/models/new-user";
 
 
 @Injectable()
@@ -40,7 +44,32 @@ export class UserEffects {
     //         ))
     // ));
 
+    saveNewUser$ = createEffect(() => this.actions$
+        .pipe(
+            ofType(saveNewUser),
+            withLatestFrom(this.store.select(selectUserForm)),
+            switchMap(([action, userForm]) => {
+                const newUser: NewUser = {
+                    name: userForm.controls.name.value,
+                    surname: userForm.controls.surname.value,
+                    email: userForm.controls.email.value,
+                    age: parseInt(userForm.controls.age.value),
+                };
+                return this.userService.addNewUser(newUser).pipe(
+                    map(() => saveNewUserSuccess()),
+                    catchError(() => of(saveNewUserError()))
+                )
+            })
+        )
+    );
+
+    // saveEditedUser$ = createEffect(()=>this.actions$.pipe(
+    //     ofType(saveEditedUser),
+    //     switchMap(action=>)
+    // ))
+
     constructor(private actions$: Actions,
         private userService: UserService,
-        private imageService: ImageService) { }
+        private imageService: ImageService,
+        private store: Store<AppState>) { }
 }

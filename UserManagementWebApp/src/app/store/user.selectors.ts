@@ -10,5 +10,9 @@ export const selectUsers = createSelector(selectUserFeature, (state: UserState) 
 export const selectUserDetails = createSelector(selectUserFeature, (state: UserState) =>
     state.userDetails);
 
+export const selectUserForm = createSelector(selectUserFeature, (state: UserState) =>
+    state.userForm);
+
+
 // export const selectDefaultImage = createSelector(selectUserFeature, (state: UserState) =>
 //     state.defaultUserImage);
