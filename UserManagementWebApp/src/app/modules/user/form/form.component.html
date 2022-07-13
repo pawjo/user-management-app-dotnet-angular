@@ -1,8 +1,8 @@
 <div class="p-4">
     <h1 class="display-4">Edit user</h1>
 </div>
-<div *ngIf="formState$ | async as formState" class="row">
-    <form novalidate class="col-6" [ngrxFormState]="formState">
+<div novalidate *ngIf="formState$ | async as formState" class="row">
+    <form class="col-6" [ngrxFormState]="formState">
         <div class="form-group">
             <label for="name">First name</label>
             <input class="form-control" id="name" type="text" [ngrxFormControlState]="formState.controls.name">
@@ -19,7 +19,7 @@
             <label for="email">Email</label>
             <input class="form-control" id="email" type="text" [ngrxFormControlState]="formState.controls.email">
         </div>
-        <button class="btn btn-primary" (click)="save()">Save</button>
+        <button class="btn btn-primary" [disabled]="!formState.isValid" (click)="save()">Save</button>
         <button class="btn btn-light mx-2">Cancel</button>
     </form>
 </div>

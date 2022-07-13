@@ -9,7 +9,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './store/user.effects';
-import { userReducer } from './store/user.reducer';
+import { appReducerWithValidation } from './store/user.reducer';
 import { userFeatureKey } from './store/userRoot.state';
 import { UserDetailsComponent } from './modules/user/user-details/user-details.component';
 import { FormComponent } from './modules/user/form/form.component';
@@ -29,7 +29,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     HttpClientModule,
     AppRoutingModule,
     NgbModule,
-    StoreModule.forRoot({[userFeatureKey]: userReducer}),
+    StoreModule.forRoot({[userFeatureKey]: appReducerWithValidation}),
     EffectsModule.forRoot([UserEffects]),
     ReactiveFormsModule,
     NgrxFormsModule,
