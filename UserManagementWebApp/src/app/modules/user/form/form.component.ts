@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { FormGroupState } from 'ngrx-forms';
+import { FormControlState, FormGroupState } from 'ngrx-forms';
 import { Observable } from 'rxjs';
 import { UserForm } from 'src/app/shared/models/user-form';
 import { AppState } from 'src/app/store/app.state';
@@ -32,5 +32,10 @@ export class FormComponent implements OnInit {
 
   save(): void {
     this.store.dispatch(saveNewUser());
+  }
+
+  isControlInvalid(control: FormControlState<string>): boolean {
+    const result = control.isTouched && Object.keys(control.errors).length !== 0;
+    return result;
   }
 }

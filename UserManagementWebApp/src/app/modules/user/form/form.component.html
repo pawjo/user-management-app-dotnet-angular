@@ -1,23 +1,41 @@
 <div class="p-4">
     <h1 class="display-4">Edit user</h1>
 </div>
-<div novalidate *ngIf="formState$ | async as formState" class="row">
+<div *ngIf="formState$ | async as formState" class="row">
     <form class="col-6" [ngrxFormState]="formState">
         <div class="form-group">
             <label for="name">First name</label>
-            <input class="form-control" id="name" type="text" [ngrxFormControlState]="formState.controls.name">
+            <input class="form-control" id="name" type="text" [ngrxFormControlState]="formState.controls.name"
+                [class.is-invalid]="isControlInvalid(formState.controls.name)">
+            <div class="invalid-feedback">
+                Please enter a name.
+            </div>
         </div>
         <div class="form-group">
             <label for="surname">Surame</label>
-            <input class="form-control" id="surname" type="text" [ngrxFormControlState]="formState.controls.surname">
+            <input class="form-control" id="surname" type="text" [ngrxFormControlState]="formState.controls.surname"
+                [class.is-invalid]="isControlInvalid(formState.controls.surname)">
+            <div class="invalid-feedback">
+                Please enter a surname.
+            </div>
         </div>
         <div class="form-group">
             <label for="email">Age</label>
-            <input class="form-control" id="age" type="text" [ngrxFormControlState]="formState.controls.age">
+            <input class="form-control" id="age" type="text" [ngrxFormControlState]="formState.controls.age"
+                [class.is-invalid]="isControlInvalid(formState.controls.age)">
+            <div class="invalid-feedback">
+                <div *ngIf="formState.controls.age.errors.required">Please enter an age.</div>
+                <div *ngIf="formState.controls.age.errors.pattern">Age must be a number.</div>
+            </div>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input class="form-control" id="email" type="text" [ngrxFormControlState]="formState.controls.email">
+            <input class="form-control" id="email" type="text" [ngrxFormControlState]="formState.controls.email"
+                [class.is-invalid]="isControlInvalid(formState.controls.email)">
+            <div class="invalid-feedback">
+                <div *ngIf="formState.controls.email.errors.required">Please enter an email.</div>
+                <div *ngIf="formState.controls.email.errors.email">Wrong email format.</div>
+            </div>
         </div>
         <button class="btn btn-primary" [disabled]="!formState.isValid" (click)="save()">Save</button>
         <button class="btn btn-light mx-2">Cancel</button>

@@ -53,8 +53,8 @@ export class UserEffects {
                     name: userForm.controls.name.value,
                     surname: userForm.controls.surname.value,
                     email: userForm.controls.email.value,
-                    // age: parseInt(userForm.controls.age.value)
-                    age: userForm.controls.age.value
+                    age: parseInt(userForm.controls.age.value)
+                    // age: userForm.controls.age.value
                 };
                 return this.userService.addNewUser(newUser).pipe(
                     map(() => saveNewUserSuccess()),

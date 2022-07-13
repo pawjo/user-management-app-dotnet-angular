@@ -13,7 +13,7 @@ const initialFormState = createFormGroupState<UserForm>(USER_FORM_ID, {
     name: '',
     surname: '',
     email: '',
-    age: 0
+    age: ''
 });
 
 
@@ -44,7 +44,7 @@ export const userReducer = createReducer(
 const validationReducer = updateGroup<UserForm>({
     name: validate(required),
     surname: validate(required),
-    age: validate(required),
+    age: validate(required, pattern(new RegExp("^\\d+$"))),
     email: validate(required, email)
 });
 
