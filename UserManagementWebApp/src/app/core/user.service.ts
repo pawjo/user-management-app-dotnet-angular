@@ -6,6 +6,7 @@ import { UserDetails } from '../shared/models/user-details';
 import { UserListItem } from '../shared/models/user-list-item';
 import { tap } from 'rxjs/operators'
 import { NewUser } from '../shared/models/new-user';
+import { EditedUser } from '../shared/models/edited-user';
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,9 @@ export class UserService {
 
   addNewUser(newUser: NewUser): Observable<number> {
     return this.httpClient.post<number>(this.baseUrl, newUser);
+  }
+
+  updateUser(editedUser: EditedUser):Observable<any>{
+    return this.httpClient.put(this.baseUrl, editedUser);
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.state';
-import { loadUserDetails } from 'src/app/store/user.actions';
+import { loadUserDetails, loadUserDetailsError } from 'src/app/store/user.actions';
 import { selectUserDetails } from 'src/app/store/user.selectors';
 
 @Component({
@@ -20,11 +20,16 @@ export class UserDetailsComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
     private route: ActivatedRoute) { }
-  
+
 
   ngOnInit(): void {
     const param = this.route.snapshot.paramMap.get('userId');
     this.userId = parseInt(param!);
-    this.store.dispatch(loadUserDetails({ userId: this.userId }));
+    if (isNaN(this.userId)) {
+      console.error('Wrong user id');
+    }
+    else {
+      this.store.dispatch(loadUserDetails({ userId: this.userId }));
+    }
   }
 }

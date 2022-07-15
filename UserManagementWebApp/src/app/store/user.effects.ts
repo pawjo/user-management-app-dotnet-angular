@@ -1,14 +1,18 @@
 import { Injectable } from "@angular/core";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../core/user.service";
 import { map, catchError, exhaustMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess } from "./user.actions";
+import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess } from "./user.actions";
 import { ImageService } from "../core/image.service";
 import { AppState } from "./app.state";
 import { Store } from "@ngrx/store";
-import { selectUserForm } from "./user.selectors";
+import { selectEditUserFormWithId, selectUserFeature, selectUserForm, selectUserId } from "./user.selectors";
 import { NewUser } from "../shared/models/new-user";
+import { EditedUser } from "../shared/models/edited-user";
+import { createFormGroupState, FormControlState } from "ngrx-forms";
+import { UserForm } from "../shared/models/user-form";
+import { USER_FORM_ID } from "./user.reducer";
 
 
 @Injectable()
@@ -59,15 +63,52 @@ export class UserEffects {
                 return this.userService.addNewUser(newUser).pipe(
                     map(() => saveNewUserSuccess()),
                     catchError(() => of(saveNewUserError()))
-                )
+                );
             })
         )
     );
 
-    // saveEditedUser$ = createEffect(()=>this.actions$.pipe(
-    //     ofType(saveEditedUser),
-    //     switchMap(action=>)
-    // ))
+    loadUserForEdit$ = createEffect(() => this.actions$
+        .pipe(
+            ofType(loadUserForEdit),
+            switchMap(action => this.userService.getUserDetails(action.userId)
+                .pipe(
+                    map(user => {
+                        const data: UserForm = {
+                            name: user.name,
+                            surname: user.surname,
+                            email: user.email,
+                            age: user.age.toString()
+                        };
+                        const form = createFormGroupState<UserForm>(USER_FORM_ID, data);
+
+                        return loadUserForEditSuccess({ userForm: form });
+                    }),
+                    catchError(() => of(loadUserForEditError()))
+                )
+            )
+        )
+    );
+
+    saveEditedUser$ = createEffect(() => this.actions$
+        .pipe(
+            ofType(saveEditedUser),
+            withLatestFrom(this.store.select(selectEditUserFormWithId)),
+            switchMap(([action, data]) => {
+                const controls = data.userForm.controls;
+                const editedUser: EditedUser = {
+                    id: data.userId,
+                    name: controls.name.value,
+                    surname: controls.surname.value,
+                    email: controls.email.value,
+                    age: parseInt(controls.age.value)
+                };
+                return this.userService.updateUser(editedUser).pipe(
+                    map(() => saveEditedUserSuccess()),
+                    catchError(() => of(saveEditedUserError()))
+                );
+            })
+        ))
 
     constructor(private actions$: Actions,
         private userService: UserService,

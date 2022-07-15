@@ -15,6 +15,8 @@ namespace UserManagementAPI.Logic.Interfaces
 
         Task<Result<IEnumerable<UserListItemDto>>> GetListAsync();
 
+        Task<Result> UpdateAsync(UpdateUserRequest user);
+
         Task<Result> UpdateUserImageAsync(int userId, IFormFile image);
     }
 }

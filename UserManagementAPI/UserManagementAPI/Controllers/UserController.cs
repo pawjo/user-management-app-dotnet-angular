@@ -54,6 +54,19 @@ namespace UserManagementAPI.Controllers
             return Ok(result.Response);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserRequest request)
+        {
+            var result = await _service.UpdateAsync(request);
+
+            if (result.IsError)
+            {
+                return StatusCode(result.ErrorCode, result.ErrorMessage);
+            }
+
+            return Ok();
+        }
+
         [HttpPut(imageRoute)]
         public async Task<IActionResult> UpdateUserImageAsync([FromForm] IFormFile image, [FromRoute] int userId)
         {

@@ -6,6 +6,7 @@ import { UserListItem } from "../shared/models/user-list-item";
 export interface UserState {
     users: UserListItem[],
     userDetails: UserDetails,
+    userId: number,
     userForm: FormGroupState<UserForm>
 }
 
