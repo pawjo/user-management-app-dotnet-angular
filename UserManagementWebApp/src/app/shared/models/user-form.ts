@@ -3,4 +3,5 @@ export interface UserForm {
     surname: string;
     email: string;
     age: string;
+    image?: File;
 }

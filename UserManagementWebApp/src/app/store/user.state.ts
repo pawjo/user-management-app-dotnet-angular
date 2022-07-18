@@ -8,5 +8,6 @@ export interface UserState {
     userDetails: UserDetails,
     userId: number,
     userForm: FormGroupState<UserForm>
+    formImage: File
 }
 

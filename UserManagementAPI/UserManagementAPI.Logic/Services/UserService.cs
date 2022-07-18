@@ -135,7 +135,7 @@ namespace UserManagementAPI.Logic.Services
 
             user = _mapper.Map<UpdateUserRequest, User>(request, user);
             var updated = await _context.SaveChangesAsync();
-            if (updated != 1)
+            if (updated > 1)
             {
                 return new Result(500, "User update error");
             }
@@ -160,7 +160,7 @@ namespace UserManagementAPI.Logic.Services
 
             var updated = await UpdateAndSaveUserImageName(user, imageUploadResult.Response);
 
-            if (updated != 1)
+            if (updated > 1)
             {
                 return new Result(500, "User update error");
             }

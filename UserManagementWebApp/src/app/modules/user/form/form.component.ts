@@ -6,9 +6,10 @@ import { FormControlState, FormGroupState } from 'ngrx-forms';
 import { Observable } from 'rxjs';
 import { UserForm } from 'src/app/shared/models/user-form';
 import { AppState } from 'src/app/store/app.state';
-import { loadUserForEdit, saveEditedUser, saveNewUser } from 'src/app/store/user.actions';
-import { selectUserForm } from 'src/app/store/user.selectors';
+import { changeFormImage, loadUserForEdit, saveEditedUser, saveNewUser } from 'src/app/store/user.actions';
+import { selectUserDetails, selectUserForm } from 'src/app/store/user.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserDetails } from 'src/app/shared/models/user-details';
 
 @Component({
   selector: 'app-form',
@@ -21,7 +22,15 @@ export class FormComponent implements OnInit {
 
   formState$: Observable<FormGroupState<UserForm>> = this.store.select(selectUserForm);
 
+  userDetails$: Observable<UserDetails> = this.store.select(selectUserDetails);
+
   editedUserId: number = -1;
+
+  imageError: boolean = false;
+
+  noChanges: boolean = true;
+
+  newImageUrl: string = ''; 
 
   constructor(private fb: FormBuilder,
     private store: Store<AppState>,
@@ -41,7 +50,7 @@ export class FormComponent implements OnInit {
     }
   }
 
-  save(): void {
+  save(formState: FormGroupState<UserForm>): void {
     if (this.editedUserId !== -1) {
       this.store.dispatch(saveEditedUser({ userId: this.editedUserId }));
     }
@@ -58,5 +67,24 @@ export class FormComponent implements OnInit {
   isControlInvalid(control: FormControlState<string>): boolean {
     const result = control.isTouched && Object.keys(control.errors).length !== 0;
     return result;
+  }
+
+  onFileChange(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.imageError = file.type !== 'image/png' && file.type !== 'image/jpeg';
+      this.store.dispatch(changeFormImage({ formImage: file }));
+      this.noChanges = false;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.newImageUrl = reader.result as string;
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  onFormChange() {
+    this.noChanges = false;
   }
 }

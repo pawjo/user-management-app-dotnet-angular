@@ -1,7 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
 import { UserForm } from "../shared/models/user-form";
 import { EmptyImage } from "../shared/models/user-image";
-import { loadUserDetails, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditSuccess, loadUserListSuccess, saveNewUserSuccess } from "./user.actions";
+import { changeFormImage, loadUserDetails, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditSuccess, loadUserListSuccess, saveNewUserSuccess } from "./user.actions";
 import { UserState } from "./user.state";
 import { createFormGroupState, onNgrxForms, updateGroup, validate, wrapReducerWithFormStateUpdate } from "ngrx-forms";
 import { number, required, email, pattern } from 'ngrx-forms/validation';
@@ -16,6 +16,7 @@ const initialFormState = createFormGroupState<UserForm>(USER_FORM_ID, {
     age: ''
 });
 
+const initialFormImage = new File([], '');
 
 const initialState: UserState = {
     users: [],
@@ -29,7 +30,8 @@ const initialState: UserState = {
         image: EmptyImage
     },
     userId: -1,
-    userForm: initialFormState
+    userForm: initialFormState,
+    formImage: initialFormImage
 };
 
 
@@ -41,7 +43,9 @@ export const userReducer = createReducer(
     on(loadUserDetailsSuccess, (state, { userDetails }) => ({ ...state, userDetails: userDetails })),
     on(saveNewUserSuccess, (state) => ({ ...state, userForm: initialFormState })),
     on(loadUserForEdit, (state, { userId }) => ({ ...state, userId: userId })),
-    on(loadUserForEditSuccess, (state, { userForm }) => ({ ...state, userForm: userForm }))
+    on(loadUserForEditSuccess, (state, { userDetails, userForm }) =>
+        ({ ...state, userDetails: userDetails, userForm: userForm })),
+    on(changeFormImage, (state, { formImage }) => ({ ...state, formImage: formImage }))
 );
 
 const validationReducer = updateGroup<UserForm>({

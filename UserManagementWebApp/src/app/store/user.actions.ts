@@ -27,9 +27,15 @@ export const saveNewUserError = createAction('[New user] Save error');
 const editUser = '[Edit user] ';
 
 export const loadUserForEdit = createAction(editUser + 'Load details', props<{ userId: number }>());
-export const loadUserForEditSuccess = createAction(editUser + 'Load details success', props<{ userForm: FormGroupState<UserForm> }>());
+export const loadUserForEditSuccess = createAction(editUser + 'Load details success',
+    props<{ userDetails: UserDetails, userForm: FormGroupState<UserForm> }>());
 export const loadUserForEditError = createAction(editUser + 'Load details error');
 
 export const saveEditedUser = createAction(editUser + 'Save', props<{ userId: number }>());
 export const saveEditedUserSuccess = createAction(editUser + 'Save success');
 export const saveEditedUserError = createAction(editUser + 'Save error');
+
+const formImage = '[Form image] ';
+export const changeFormImage = createAction(formImage + 'Change', props<{ formImage: File}>());
+export const uploadFormImageSuccess = createAction(formImage + 'Upload success');
+export const uploadFormImageError = createAction(formImage + 'Upload error');

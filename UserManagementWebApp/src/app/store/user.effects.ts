@@ -3,16 +3,17 @@ import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../core/user.service";
 import { map, catchError, exhaustMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess } from "./user.actions";
+import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess, uploadFormImageError, uploadFormImageSuccess } from "./user.actions";
 import { ImageService } from "../core/image.service";
 import { AppState } from "./app.state";
 import { Store } from "@ngrx/store";
-import { selectEditUserFormWithId, selectUserFeature, selectUserForm, selectUserId } from "./user.selectors";
+import { selectEditUserFormWithId, selectFormImage, selectFormImageWithId, selectUserFeature, selectUserForm, selectUserId } from "./user.selectors";
 import { NewUser } from "../shared/models/new-user";
 import { EditedUser } from "../shared/models/edited-user";
 import { createFormGroupState, FormControlState } from "ngrx-forms";
 import { UserForm } from "../shared/models/user-form";
 import { USER_FORM_ID } from "./user.reducer";
+import { UserDetails } from "../shared/models/user-details";
 
 
 @Injectable()
@@ -82,7 +83,7 @@ export class UserEffects {
                         };
                         const form = createFormGroupState<UserForm>(USER_FORM_ID, data);
 
-                        return loadUserForEditSuccess({ userForm: form });
+                        return loadUserForEditSuccess({ userDetails: user, userForm: form });
                     }),
                     catchError(() => of(loadUserForEditError()))
                 )
@@ -108,7 +109,23 @@ export class UserEffects {
                     catchError(() => of(saveEditedUserError()))
                 );
             })
-        ))
+        )
+    );
+
+    saveFormImage$ = createEffect(() => this.actions$
+        .pipe(
+            ofType(saveEditedUserSuccess, saveNewUserSuccess),
+            withLatestFrom(this.store.select(selectFormImageWithId)),
+            switchMap(([action, data]) => {
+                const formData = new FormData();
+                formData.append('image', data.formImage);
+                return this.imageService.upload(data.userId, formData).pipe(
+                    map(() => uploadFormImageSuccess()),
+                    catchError(() => of(uploadFormImageError()))
+                );
+            })
+        )
+    );
 
     constructor(private actions$: Actions,
         private userService: UserService,
