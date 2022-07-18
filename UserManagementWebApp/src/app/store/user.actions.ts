@@ -8,9 +8,13 @@ export const loadUserList = createAction('[User List] Load users');
 export const loadUserListSuccess = createAction('[User List] Load users success', props<{ users: UserListItem[] }>());
 export const loadUserListError = createAction('[User list] Load user error');
 
-export const loadUserDetails = createAction('[User details] Load details', props<{ userId: number }>());
-export const loadUserDetailsSuccess = createAction('[User details] Load details success', props<{ userDetails: UserDetails }>());
-export const loadUserDetailsError = createAction('[User details] Load details error');
+const userDetails = '[User details] ';
+export const loadUserDetails = createAction(userDetails + 'Load details', props<{ userId: number }>());
+export const loadUserDetailsSuccess = createAction(userDetails + 'Load details success', props<{ userDetails: UserDetails }>());
+export const loadUserDetailsError = createAction(userDetails + 'Load details error');
+export const deleteUser = createAction(userDetails + 'Delete user');
+export const deleteUserSuccess = createAction(userDetails + 'Delete user success');
+export const deleteUserError = createAction(userDetails + 'Delete user error');
 
 // export const loadDefaultImage = createAction('[Default image] Load');
 // export const loadDefaultImageSuccess = createAction('[Default image] Load success', props<{defaultImage: UserImage}>());
@@ -39,3 +43,5 @@ export const uploadFormImage = createAction(formImage + 'Upload');
 export const deleteFormImage = createAction(formImage + 'Delete');
 export const changeFormImageSuccess = createAction(formImage + 'Upload success');
 export const changeFormImageError = createAction(formImage + 'Upload error');
+
+export const resetForm = createAction('[Form] Reset');

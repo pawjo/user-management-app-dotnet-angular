@@ -33,6 +33,7 @@
     </div>
     <div class="row">
         <button class="btn btn-primary" [routerLink]="['/edit', user.id]">Edit</button>
+        <button class="btn btn-danger mx-2" (click)="delete()">Delete</button>
     </div>
 </div>
 <ng-template #loading>

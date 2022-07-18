@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../core/user.service";
 import { map, catchError, exhaustMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { deleteFormImage, loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess, uploadFormImage, changeFormImageError, uploadFormImageSkipped, changeFormImageSuccess } from "./user.actions";
+import { deleteFormImage, loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess, uploadFormImage, changeFormImageError, uploadFormImageSkipped, changeFormImageSuccess, deleteUser, deleteUserSuccess, deleteUserError } from "./user.actions";
 import { ImageService } from "../core/image.service";
 import { AppState } from "./app.state";
 import { Store } from "@ngrx/store";
@@ -137,6 +137,17 @@ export class UserEffects {
             switchMap(([action, userId]) => this.imageService.delete(userId).pipe(
                 map(() => changeFormImageSuccess()),
                 catchError(() => of(changeFormImageError()))
+            ))
+        )
+    );
+
+    deleteUser$ = createEffect(() => this.actions$
+        .pipe(
+            ofType(deleteUser),
+            withLatestFrom(this.store.select(selectUserId)),
+            switchMap(([action, userId]) => this.userService.delete(userId).pipe(
+                map(() => deleteUserSuccess()),
+                catchError(() => of(deleteUserError()))
             ))
         )
     );

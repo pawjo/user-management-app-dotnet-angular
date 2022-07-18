@@ -6,7 +6,7 @@ import { FormControlState, FormGroupState } from 'ngrx-forms';
 import { Observable } from 'rxjs';
 import { UserForm } from 'src/app/shared/models/user-form';
 import { AppState } from 'src/app/store/app.state';
-import { changeFormImage, deleteFormImage, loadUserForEdit, saveEditedUser, saveNewUser, uploadFormImage } from 'src/app/store/user.actions';
+import { changeFormImage, deleteFormImage, loadUserForEdit, resetForm, saveEditedUser, saveNewUser, uploadFormImage } from 'src/app/store/user.actions';
 import { selectUserDetails, selectUserForm } from 'src/app/store/user.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserDetails } from 'src/app/shared/models/user-details';
@@ -32,6 +32,8 @@ export class FormComponent implements OnInit {
 
   isImageChanged: boolean = false;
 
+  isImageDeleted: boolean = false;
+
   newImageUrl: string = '';
 
   constructor(private fb: FormBuilder,
@@ -41,6 +43,7 @@ export class FormComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+    this.store.dispatch(resetForm());
     const param = this.route.snapshot.paramMap.get('userId');
     const userId = parseInt(param!);
     if (!isNaN(userId)) {
@@ -93,6 +96,7 @@ export class FormComponent implements OnInit {
 
   deleteImage() {
     this.newImageUrl = '';
+    this.isImageDeleted = true;
     if (this.editedUserId !== -1) {
       this.store.dispatch(deleteFormImage());
     }

@@ -33,4 +33,8 @@ export class UserService {
   updateUser(editedUser: EditedUser):Observable<any>{
     return this.httpClient.put(this.baseUrl, editedUser);
   }
+
+  delete(userId:number):Observable<any>{
+    return this.httpClient.delete(`${this.baseUrl}/${userId}`);
+  }
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.state';
-import { loadUserDetails, loadUserDetailsError } from 'src/app/store/user.actions';
+import { deleteUser, loadUserDetails, loadUserDetailsError } from 'src/app/store/user.actions';
 import { selectUserDetails } from 'src/app/store/user.selectors';
 
 @Component({
@@ -16,10 +16,12 @@ export class UserDetailsComponent implements OnInit {
 
   user$ = this.store.select(selectUserDetails);
 
+
   // defaultImage$ = this.store.select(selectDefaultImage);
 
   constructor(private store: Store<AppState>,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private router: Router) { }
 
 
   ngOnInit(): void {
@@ -30,6 +32,13 @@ export class UserDetailsComponent implements OnInit {
     }
     else {
       this.store.dispatch(loadUserDetails({ userId: this.userId }));
+    }
+  }
+
+  delete(): void {
+    if (confirm("Are you sure to delete this user?")) {
+      this.store.dispatch(deleteUser());
+      this.router.navigate(['']);
     }
   }
 }
