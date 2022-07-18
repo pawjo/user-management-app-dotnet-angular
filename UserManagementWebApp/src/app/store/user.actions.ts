@@ -20,7 +20,7 @@ export const loadUserDetailsError = createAction('[User details] Load details er
 // export const loadDefaultImageError = createAction('[Default image] Load error');
 
 export const saveNewUser = createAction('[New user] Save');
-export const saveNewUserSuccess = createAction('[New user] Save success');
+export const saveNewUserSuccess = createAction('[New user] Save success', props<{ userId: number }>());
 export const saveNewUserError = createAction('[New user] Save error');
 
 
@@ -31,11 +31,13 @@ export const loadUserForEditSuccess = createAction(editUser + 'Load details succ
     props<{ userDetails: UserDetails, userForm: FormGroupState<UserForm> }>());
 export const loadUserForEditError = createAction(editUser + 'Load details error');
 
-export const saveEditedUser = createAction(editUser + 'Save', props<{ userId: number }>());
+export const saveEditedUser = createAction(editUser + 'Save');
 export const saveEditedUserSuccess = createAction(editUser + 'Save success');
 export const saveEditedUserError = createAction(editUser + 'Save error');
 
 const formImage = '[Form image] ';
-export const changeFormImage = createAction(formImage + 'Change', props<{ formImage: File}>());
+export const changeFormImage = createAction(formImage + 'Change', props<{ formImage: File }>());
+export const uploadFormImageSkipped = createAction(formImage + 'Skipped');
+export const uploadFormImage = createAction(formImage + 'Upload');
 export const uploadFormImageSuccess = createAction(formImage + 'Upload success');
 export const uploadFormImageError = createAction(formImage + 'Upload error');

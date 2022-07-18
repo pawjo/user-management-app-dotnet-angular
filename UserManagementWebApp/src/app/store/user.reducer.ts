@@ -1,7 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
 import { UserForm } from "../shared/models/user-form";
 import { EmptyImage } from "../shared/models/user-image";
-import { changeFormImage, loadUserDetails, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditSuccess, loadUserListSuccess, saveNewUserSuccess } from "./user.actions";
+import { changeFormImage, loadUserDetails, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditSuccess, loadUserListSuccess, saveNewUserSuccess, uploadFormImageSuccess } from "./user.actions";
 import { UserState } from "./user.state";
 import { createFormGroupState, onNgrxForms, updateGroup, validate, wrapReducerWithFormStateUpdate } from "ngrx-forms";
 import { number, required, email, pattern } from 'ngrx-forms/validation';
@@ -16,7 +16,7 @@ const initialFormState = createFormGroupState<UserForm>(USER_FORM_ID, {
     age: ''
 });
 
-const initialFormImage = new File([], '');
+export const initialFormImage = new File([], '');
 
 const initialState: UserState = {
     users: [],
@@ -41,11 +41,12 @@ export const userReducer = createReducer(
     on(loadUserListSuccess, (state, { users }) => ({ ...state, users: users })),
     on(loadUserDetails, (state, { userId }) => ({ ...state, userId: userId })),
     on(loadUserDetailsSuccess, (state, { userDetails }) => ({ ...state, userDetails: userDetails })),
-    on(saveNewUserSuccess, (state) => ({ ...state, userForm: initialFormState })),
+    on(saveNewUserSuccess, (state, { userId }) => ({ ...state, userId: userId, userForm: initialFormState })),
     on(loadUserForEdit, (state, { userId }) => ({ ...state, userId: userId })),
     on(loadUserForEditSuccess, (state, { userDetails, userForm }) =>
         ({ ...state, userDetails: userDetails, userForm: userForm })),
-    on(changeFormImage, (state, { formImage }) => ({ ...state, formImage: formImage }))
+    on(changeFormImage, (state, { formImage }) => ({ ...state, formImage: formImage })),
+    on(uploadFormImageSuccess, (state) => ({ ...state, formImage: initialFormImage }))
 );
 
 const validationReducer = updateGroup<UserForm>({

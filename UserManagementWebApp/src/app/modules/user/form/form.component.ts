@@ -6,7 +6,7 @@ import { FormControlState, FormGroupState } from 'ngrx-forms';
 import { Observable } from 'rxjs';
 import { UserForm } from 'src/app/shared/models/user-form';
 import { AppState } from 'src/app/store/app.state';
-import { changeFormImage, loadUserForEdit, saveEditedUser, saveNewUser } from 'src/app/store/user.actions';
+import { changeFormImage, loadUserForEdit, saveEditedUser, saveNewUser, uploadFormImage } from 'src/app/store/user.actions';
 import { selectUserDetails, selectUserForm } from 'src/app/store/user.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserDetails } from 'src/app/shared/models/user-details';
@@ -28,9 +28,11 @@ export class FormComponent implements OnInit {
 
   imageError: boolean = false;
 
-  noChanges: boolean = true;
+  isFormChanged: boolean = false;
 
-  newImageUrl: string = ''; 
+  isImageChanged: boolean = false;
+
+  newImageUrl: string = '';
 
   constructor(private fb: FormBuilder,
     private store: Store<AppState>,
@@ -50,9 +52,12 @@ export class FormComponent implements OnInit {
     }
   }
 
-  save(formState: FormGroupState<UserForm>): void {
-    if (this.editedUserId !== -1) {
-      this.store.dispatch(saveEditedUser({ userId: this.editedUserId }));
+  save(): void {
+    if (this.editedUserId !== -1 && this.isFormChanged) {
+      this.store.dispatch(saveEditedUser());
+    }
+    else if (this.editedUserId !== -1) {
+      this.store.dispatch(uploadFormImage());
     }
     else {
       this.store.dispatch(saveNewUser());
@@ -74,7 +79,7 @@ export class FormComponent implements OnInit {
     if (file) {
       this.imageError = file.type !== 'image/png' && file.type !== 'image/jpeg';
       this.store.dispatch(changeFormImage({ formImage: file }));
-      this.noChanges = false;
+      this.isImageChanged = true;
 
       const reader = new FileReader();
       reader.onload = () => {
@@ -85,6 +90,6 @@ export class FormComponent implements OnInit {
   }
 
   onFormChange() {
-    this.noChanges = false;
+    this.isFormChanged = true;
   }
 }

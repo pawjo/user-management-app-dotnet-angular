@@ -3,7 +3,7 @@ import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../core/user.service";
 import { map, catchError, exhaustMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess, uploadFormImageError, uploadFormImageSuccess } from "./user.actions";
+import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess, uploadFormImage, uploadFormImageError, uploadFormImageSkipped, uploadFormImageSuccess } from "./user.actions";
 import { ImageService } from "../core/image.service";
 import { AppState } from "./app.state";
 import { Store } from "@ngrx/store";
@@ -12,7 +12,7 @@ import { NewUser } from "../shared/models/new-user";
 import { EditedUser } from "../shared/models/edited-user";
 import { createFormGroupState, FormControlState } from "ngrx-forms";
 import { UserForm } from "../shared/models/user-form";
-import { USER_FORM_ID } from "./user.reducer";
+import { initialFormImage, USER_FORM_ID } from "./user.reducer";
 import { UserDetails } from "../shared/models/user-details";
 
 
@@ -62,7 +62,7 @@ export class UserEffects {
                     // age: userForm.controls.age.value
                 };
                 return this.userService.addNewUser(newUser).pipe(
-                    map(() => saveNewUserSuccess()),
+                    map(id => saveNewUserSuccess({ userId: id })),
                     catchError(() => of(saveNewUserError()))
                 );
             })
@@ -114,9 +114,13 @@ export class UserEffects {
 
     saveFormImage$ = createEffect(() => this.actions$
         .pipe(
-            ofType(saveEditedUserSuccess, saveNewUserSuccess),
+            ofType(uploadFormImage, saveEditedUserSuccess, saveNewUserSuccess),
             withLatestFrom(this.store.select(selectFormImageWithId)),
             switchMap(([action, data]) => {
+                if (data.formImage === initialFormImage) {
+                    return of(uploadFormImageSkipped());
+                }
+
                 const formData = new FormData();
                 formData.append('image', data.formImage);
                 return this.imageService.upload(data.userId, formData).pipe(
