@@ -1,0 +1,73 @@
+<div class="p-4">
+    <h1 class="display-4">{{title}}</h1>
+</div>
+<div *ngIf="formState$ | async as formState; else loading">
+    <form class="row" [ngrxFormState]="formState" (change)="onFormChange()">
+        <div class="col-6">
+            <div class="form-group">
+                <label for="name">First name</label>
+                <input class="form-control" id="name" type="text" [ngrxFormControlState]="formState.controls.name"
+                    [class.is-invalid]="isControlInvalid(formState.controls.name)">
+                <div class="invalid-feedback">
+                    Please enter a name.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="surname">Surame</label>
+                <input class="form-control" id="surname" type="text" [ngrxFormControlState]="formState.controls.surname"
+                    [class.is-invalid]="isControlInvalid(formState.controls.surname)">
+                <div class="invalid-feedback">
+                    Please enter a surname.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Age</label>
+                <input class="form-control" id="age" type="text" [ngrxFormControlState]="formState.controls.age"
+                    [class.is-invalid]="isControlInvalid(formState.controls.age)">
+                <div class="invalid-feedback">
+                    <div *ngIf="formState.controls.age.errors.required">Please enter an age.</div>
+                    <div *ngIf="formState.controls.age.errors.pattern">Age must be a number.</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control" id="email" type="text" [ngrxFormControlState]="formState.controls.email"
+                    [class.is-invalid]="isControlInvalid(formState.controls.email)">
+                <div class="invalid-feedback">
+                    <div *ngIf="formState.controls.email.errors.required">Please enter an email.</div>
+                    <div *ngIf="formState.controls.email.errors.email">Wrong email format.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label for="image"></label>
+                <div *ngIf="newImageUrl; else actualImage">
+                    <img [src]="newImageUrl" class="img-thumbnail user-img">
+                </div>
+                <ng-template #actualImage>
+                    <div *ngIf="(userDetails$ | async) as user">
+                        <img *ngIf="!user.isDefaultImage; else defaultImage" class="img-thumbnail user-img"
+                            [src]="user.image.url">
+                        <ng-template #defaultImage>
+                            <img class="img-thumbnail user-img" src="assets/user_icon.png">
+                        </ng-template>
+                    </div>
+                </ng-template>
+                <input class="form-control" id="image" type="file" (change)="onFileChange($event)"
+                    [class.is-invalid]="imageError">
+                <div class="invalid-feedback">
+                    Wrong file type.
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary" [disabled]="!formState.isValid || !(isFormChanged || isImageChanged)"
+            (click)="save()">Save</button>
+        <button class="btn btn-light mx-2" (click)="cancel()">Cancel</button>
+    </form>
+
+
+</div>
+<ng-template #loading>
+    Loading...
+</ng-template>

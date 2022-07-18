@@ -109,6 +109,24 @@ namespace UserManagementAPI.Logic.Services
             return new Result<IEnumerable<UserListItemDto>>(response);
         }
 
+        public async Task<Result> UpdateAsync(UpdateUserRequest request)
+        {
+            var user = await GetSingleUserById(request.Id);
+
+            if (user == null)
+            {
+                return new Result(404, "User not found");
+            }
+
+            user = _mapper.Map<UpdateUserRequest, User>(request, user);
+            var updated = await _context.SaveChangesAsync();
+            if (updated > 1)
+            {
+                return new Result(500, "User update error");
+            }
+            return new Result();
+        }
+
         public async Task<Result> UpdateUserImageAsync(int userId, IFormFile image)
         {
             var user = await GetSingleUserById(userId);
@@ -127,7 +145,7 @@ namespace UserManagementAPI.Logic.Services
 
             var updated = await UpdateAndSaveUserImageName(user, imageUploadResult.Response);
 
-            if (updated != 1)
+            if (updated > 1)
             {
                 return new Result(500, "User update error");
             }

@@ -9,8 +9,8 @@ namespace UserManagementAPI.Logic.MappingProfiles
         public UserMappingProfile()
         {
             CreateMap<AddUserRequest, User>();
-                //.ForMember(dest => dest.ImageName, opt =>
-                //   opt.MapFrom((src, dest, destMember, ctx) => ctx.Items["defaultImageName"]));
+            //.ForMember(dest => dest.ImageName, opt =>
+            //   opt.MapFrom((src, dest, destMember, ctx) => ctx.Items["defaultImageName"]));
 
             CreateMap<User, UserListItemDto>();
 
@@ -19,6 +19,8 @@ namespace UserManagementAPI.Logic.MappingProfiles
                    opt.MapFrom((src, dest, destMember, ctx) => ctx.Items["userImage"]))
                 .ForMember(dest => dest.IsDefaultImage, opt =>
                    opt.MapFrom((src, dest, destMember, ctx) => ctx.Items["userImage"] == null));
+
+            CreateMap<UpdateUserRequest, User>();
         }
     }
 }

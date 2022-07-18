@@ -9,11 +9,16 @@ import { UserImage } from '../shared/models/user-image';
 })
 export class ImageService {
 
-  private baseUrl = environment.apiUrl + '/image/sas';
+  private baseUrl = environment.apiUrl + '/image';
+  private sasUrl = this.baseUrl + '/sas';
 
   constructor(private httpClient: HttpClient) { }
 
   getImageByName(name: string): Observable<UserImage> {
-    return this.httpClient.get<UserImage>(`${this.baseUrl}/${name}`);
+    return this.httpClient.get<UserImage>(`${this.sasUrl}/${name}`);
+  }
+
+  upload(userId: number, image: FormData): Observable<any> {
+    return this.httpClient.put(`${this.baseUrl}/${userId}`, image);
   }
 }
