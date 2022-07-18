@@ -33,6 +33,19 @@ namespace UserManagementAPI.Controllers
             return Ok(result.Response);
         }
 
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int userId)
+        {
+            var result = await _service.DeleteAsync(userId);
+
+            if (result.IsError)
+            {
+                return StatusCode(result.ErrorCode, result.ErrorMessage);
+            }
+
+            return Ok();
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetListAsync()
         {

@@ -9,6 +9,8 @@ namespace UserManagementAPI.Logic.Interfaces
     {
         Task<Result<int>> AddAsync(AddUserRequest request);
 
+        Task<Result> DeleteAsync(int userId);
+
         Task<Result> DeleteUserImageAsync(int userId);
 
         Task<Result<UserDetailsDto>> GetDetailsAsync(int userId);

@@ -41,6 +41,33 @@ namespace UserManagementAPI.Logic.Services
             return new Result<int>(500, "Adding user data error");
         }
 
+        public async Task<Result> DeleteAsync(int userId)
+        {
+            var user = await GetSingleUserById(userId);
+
+            if (user == null)
+            {
+                return new Result(404, "User not found");
+            }
+
+            string imageName = user.ImageName;
+
+            _context.Users.Remove(user);
+            int result = await _context.SaveChangesAsync();
+
+            if(result != 1)
+            {
+                return new Result(500, "Delete user errror");
+            }
+
+            if (imageName != null)
+            {
+                return await _imageService.DeleteImageAsync(imageName);
+            }
+
+            return new Result();
+        }
+
         public async Task<Result> DeleteUserImageAsync(int userId)
         {
             var user = await GetSingleUserById(userId);
