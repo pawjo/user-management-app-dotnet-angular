@@ -1,19 +1,18 @@
 import { Injectable } from "@angular/core";
-import { act, Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { UserService } from "../core/user.service";
 import { map, catchError, exhaustMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess, uploadFormImage, uploadFormImageError, uploadFormImageSkipped, uploadFormImageSuccess } from "./user.actions";
+import { deleteFormImage, loadUserDetails, loadUserDetailsError, loadUserDetailsSuccess, loadUserForEdit, loadUserForEditError, loadUserForEditSuccess, loadUserList, loadUserListError, loadUserListSuccess, saveEditedUser, saveEditedUserError, saveEditedUserSuccess, saveNewUser, saveNewUserError, saveNewUserSuccess, uploadFormImage, changeFormImageError, uploadFormImageSkipped, changeFormImageSuccess } from "./user.actions";
 import { ImageService } from "../core/image.service";
 import { AppState } from "./app.state";
 import { Store } from "@ngrx/store";
-import { selectEditUserFormWithId, selectFormImage, selectFormImageWithId, selectUserFeature, selectUserForm, selectUserId } from "./user.selectors";
+import { selectEditUserFormWithId, selectFormImageWithId, selectUserForm, selectUserId } from "./user.selectors";
 import { NewUser } from "../shared/models/new-user";
 import { EditedUser } from "../shared/models/edited-user";
-import { createFormGroupState, FormControlState } from "ngrx-forms";
+import { createFormGroupState } from "ngrx-forms";
 import { UserForm } from "../shared/models/user-form";
 import { initialFormImage, USER_FORM_ID } from "./user.reducer";
-import { UserDetails } from "../shared/models/user-details";
 
 
 @Injectable()
@@ -124,10 +123,21 @@ export class UserEffects {
                 const formData = new FormData();
                 formData.append('image', data.formImage);
                 return this.imageService.upload(data.userId, formData).pipe(
-                    map(() => uploadFormImageSuccess()),
-                    catchError(() => of(uploadFormImageError()))
+                    map(() => changeFormImageSuccess()),
+                    catchError(() => of(changeFormImageError()))
                 );
             })
+        )
+    );
+
+    deleteFormImage$ = createEffect(() => this.actions$
+        .pipe(
+            ofType(deleteFormImage),
+            withLatestFrom(this.store.select(selectUserId)),
+            switchMap(([action, userId]) => this.imageService.delete(userId).pipe(
+                map(() => changeFormImageSuccess()),
+                catchError(() => of(changeFormImageError()))
+            ))
         )
     );
 

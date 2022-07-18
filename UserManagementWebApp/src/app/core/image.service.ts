@@ -21,4 +21,8 @@ export class ImageService {
   upload(userId: number, image: FormData): Observable<any> {
     return this.httpClient.put(`${this.baseUrl}/${userId}`, image);
   }
+
+  delete(userId: number): Observable<any> {
+    return this.httpClient.delete(`${this.baseUrl}/${userId}`);
+  }
 }

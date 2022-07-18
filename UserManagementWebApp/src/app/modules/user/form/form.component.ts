@@ -6,7 +6,7 @@ import { FormControlState, FormGroupState } from 'ngrx-forms';
 import { Observable } from 'rxjs';
 import { UserForm } from 'src/app/shared/models/user-form';
 import { AppState } from 'src/app/store/app.state';
-import { changeFormImage, loadUserForEdit, saveEditedUser, saveNewUser, uploadFormImage } from 'src/app/store/user.actions';
+import { changeFormImage, deleteFormImage, loadUserForEdit, saveEditedUser, saveNewUser, uploadFormImage } from 'src/app/store/user.actions';
 import { selectUserDetails, selectUserForm } from 'src/app/store/user.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserDetails } from 'src/app/shared/models/user-details';
@@ -42,11 +42,9 @@ export class FormComponent implements OnInit {
 
   ngOnInit(): void {
     const param = this.route.snapshot.paramMap.get('userId');
-    this.editedUserId = parseInt(param!);
-    if (isNaN(this.editedUserId)) {
-      console.error('Wrong user id');
-    }
-    else {
+    const userId = parseInt(param!);
+    if (!isNaN(userId)) {
+      this.editedUserId = userId;
       this.title = 'Edit user ' + this.editedUserId;
       this.store.dispatch(loadUserForEdit({ userId: this.editedUserId }));
     }
@@ -91,5 +89,12 @@ export class FormComponent implements OnInit {
 
   onFormChange() {
     this.isFormChanged = true;
+  }
+
+  deleteImage() {
+    this.newImageUrl = '';
+    if (this.editedUserId !== -1) {
+      this.store.dispatch(deleteFormImage());
+    }
   }
 }

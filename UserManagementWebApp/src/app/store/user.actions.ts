@@ -1,10 +1,7 @@
 import { createAction, props } from "@ngrx/store";
 import { FormGroupState } from "ngrx-forms";
-import { EditedUser } from "../shared/models/edited-user";
-import { NewUser } from "../shared/models/new-user";
 import { UserDetails } from "../shared/models/user-details";
 import { UserForm } from "../shared/models/user-form";
-import { UserImage } from "../shared/models/user-image";
 import { UserListItem } from "../shared/models/user-list-item";
 
 export const loadUserList = createAction('[User List] Load users');
@@ -39,5 +36,6 @@ const formImage = '[Form image] ';
 export const changeFormImage = createAction(formImage + 'Change', props<{ formImage: File }>());
 export const uploadFormImageSkipped = createAction(formImage + 'Skipped');
 export const uploadFormImage = createAction(formImage + 'Upload');
-export const uploadFormImageSuccess = createAction(formImage + 'Upload success');
-export const uploadFormImageError = createAction(formImage + 'Upload error');
+export const deleteFormImage = createAction(formImage + 'Delete');
+export const changeFormImageSuccess = createAction(formImage + 'Upload success');
+export const changeFormImageError = createAction(formImage + 'Upload error');

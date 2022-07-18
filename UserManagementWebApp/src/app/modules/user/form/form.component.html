@@ -49,15 +49,18 @@
                     <div *ngIf="(userDetails$ | async) as user">
                         <img *ngIf="!user.isDefaultImage; else defaultImage" class="img-thumbnail user-img"
                             [src]="user.image.url">
-                        <ng-template #defaultImage>
-                            <img class="img-thumbnail user-img" src="assets/user_icon.png">
-                        </ng-template>
                     </div>
+                </ng-template>
+                <ng-template #defaultImage>
+                    <img class="img-thumbnail user-img" src="assets/user_icon.png">
                 </ng-template>
                 <input class="form-control" id="image" type="file" (change)="onFileChange($event)"
                     [class.is-invalid]="imageError">
                 <div class="invalid-feedback">
                     Wrong file type.
+                </div>
+                <div *ngIf="editedUserId !== -1 || newImageUrl !== ''">
+                    <button class="btn btn-danger" (click)="deleteImage()">Delete image</button>
                 </div>
             </div>
         </div>
