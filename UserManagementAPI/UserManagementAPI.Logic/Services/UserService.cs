@@ -28,8 +28,7 @@ namespace UserManagementAPI.Logic.Services
 
         public async Task<Result<int>> AddAsync(AddUserRequest request)
         {
-            var user = _mapper.Map<User>(request, opt =>
-                opt.Items["defaultImageName"] = GetDefaultImageName());
+            var user = _mapper.Map<User>(request);
 
             await _context.Users.AddAsync(user);
             var added = await _context.SaveChangesAsync();
@@ -51,15 +50,7 @@ namespace UserManagementAPI.Logic.Services
                 return new Result(404, "User not found");
             }
 
-            var defaultImageName = GetDefaultImageName();
-
-            // If user have empty image name it need change to default image name
-            var isUpdateNeeded = string.IsNullOrWhiteSpace(user.ImageName);
-
-            // User have image if he doesn't have default or empty image name
-            var userHaveImage = user.ImageName != defaultImageName && !isUpdateNeeded;
-
-            if (userHaveImage)
+            if (!string.IsNullOrWhiteSpace(user.ImageName))
             {
                 var deleteImageResult = await _imageService.DeleteImageAsync(user.ImageName);
 
@@ -68,19 +59,13 @@ namespace UserManagementAPI.Logic.Services
                     return new Result(500, "Delete image error");
                 }
 
-                isUpdateNeeded = true;
-            }
-
-            if (isUpdateNeeded)
-            {
-                var updated = await UpdateAndSaveUserImageName(user, defaultImageName);
+                var updated = await UpdateAndSaveUserImageName(user, null);
                 if (updated != 1)
                 {
                     return new Result(500, "User image name update failed");
                 }
             }
-
-            if (!userHaveImage)
+            else
             {
                 return new Result(400, "User already doesn't have an image");
             }
